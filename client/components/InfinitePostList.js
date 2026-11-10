@@ -13,7 +13,16 @@ import { api } from "@/lib/api";
 import PostCard from "@/components/PostCard";
 import PostComposer from "@/components/PostComposer";
 
-export default function InfinitePostList({ endpoint, showComposer = false, empty, viewerKey, onFirstPage }) {
+export default function InfinitePostList({
+  endpoint,
+  showComposer = false,
+  composerEndpoint, // e.g. "/api/groups/kochi-designers/posts" (default: /api/posts)
+  composerPlaceholder,
+  showGroup = true,
+  empty,
+  viewerKey,
+  onFirstPage,
+}) {
   const [posts, setPosts] = useState([]);
   const [cursor, setCursor] = useState(null);
   const [status, setStatus] = useState("loading"); // loading | idle | more | error | done
@@ -72,7 +81,11 @@ export default function InfinitePostList({ endpoint, showComposer = false, empty
     <div>
       {showComposer && (
         <div className="mb-2">
-          <PostComposer onCreated={(post) => setPosts((prev) => [post, ...prev])} />
+          <PostComposer
+            endpoint={composerEndpoint}
+            placeholder={composerPlaceholder}
+            onCreated={(post) => setPosts((prev) => [post, ...prev])}
+          />
         </div>
       )}
 
@@ -96,7 +109,7 @@ export default function InfinitePostList({ endpoint, showComposer = false, empty
 
       <div className="divide-y divide-black/10 dark:divide-white/10">
         {posts.map((post) => (
-          <PostCard key={post.id} post={post} onDeleted={removePost} />
+          <PostCard key={post.id} post={post} onDeleted={removePost} showGroup={showGroup} />
         ))}
       </div>
 

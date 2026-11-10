@@ -50,18 +50,25 @@ model Group {
 model GroupMember {
   userId   String
   groupId  String
-  role     Role     @default(MEMBER)
-  joinedAt DateTime @default(now())
+  role     Role         @default(MEMBER)
+  // PENDING = asked to join a private group, waiting for an admin to approve.
+  status   MemberStatus @default(ACTIVE)
+  joinedAt DateTime     @default(now())
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@id([userId, groupId])
-  @@index([groupId])
+  @@index([groupId, status])
 }
 
 enum Role {
   OWNER
   ADMIN
   MEMBER
+}
+
+enum MemberStatus {
+  ACTIVE
+  PENDING
 }

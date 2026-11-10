@@ -85,7 +85,12 @@ export default function NavBar() {
         </Link>
 
         <NavLink href="/people" active={pathname === "/people"}>
-          People
+          <span className="sr-only sm:not-sr-only">People</span>
+          <span aria-hidden className="sm:hidden">🔍</span>
+        </NavLink>
+        <NavLink href="/groups" active={pathname.startsWith("/groups")}>
+          <span className="sr-only sm:not-sr-only">Groups</span>
+          <span aria-hidden className="sm:hidden">👥</span>
         </NavLink>
 
         {!loading && user && (

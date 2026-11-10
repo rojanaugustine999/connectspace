@@ -88,6 +88,24 @@ Log in as `<username>@demo.test` with password `password123`.
 | GET | `/api/conversations/:id` · `/:id/messages?cursor=` | participants only |
 | POST | `/api/conversations/:id/messages` · `/:id/read` | participants only |
 
+### Groups and uploads
+
+| Method | Route | Who |
+|---|---|---|
+| GET / POST | `/api/groups?q=` / `/api/groups` | anyone / logged in |
+| GET | `/api/groups/mine` | logged in |
+| GET · PATCH · DELETE | `/api/groups/:slug` | anyone · admins · owner |
+| POST / DELETE | `/api/groups/:slug/join` (join, request, leave, cancel) | logged in |
+| GET | `/api/groups/:slug/members[?status=PENDING]` | viewers / admins |
+| POST | `/api/groups/:slug/members/:userId/approve` | admins |
+| PATCH | `/api/groups/:slug/members/:userId` `{ role }` | owner |
+| DELETE | `/api/groups/:slug/members/:userId` (remove / reject) | admins |
+| GET / POST | `/api/groups/:slug/posts` | viewers / members |
+| POST | `/api/uploads/image?folder=avatars\|posts` (multipart, field `image`) | logged in |
+
+Group posts never appear in profiles, the home feed or explore. Posts in private groups return 404 to non-members.
+Images are stored in `server/uploads/` in development, or on Cloudinary when `CLOUDINARY_URL` is set.
+
 ## Socket.io events (same port as the API, logged in with the JWT cookie)
 
 | Client sends | Server pushes |
@@ -105,4 +123,5 @@ Log in as `<username>@demo.test` with password `password123`.
 4. ✅ Posts, likes, comments (with replies)
 5. ✅ Home feed + explore + infinite scroll (compound cursor)
 6. ✅ Real-time chat, typing, read receipts + live notifications (Socket.io)
-7. Groups, image upload, deploy
+7. ✅ Groups (public/private, roles, join requests) + image uploads (local / Cloudinary)
+8. Deploy: GitHub → Vercel (client) + Render (API + Socket.io)

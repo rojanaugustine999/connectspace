@@ -7,7 +7,7 @@ import { timeAgo } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import LikeButton from "@/components/LikeButton";
 
-export default function PostCard({ post, onDeleted, linkToPost = true, commentCount }) {
+export default function PostCard({ post, onDeleted, linkToPost = true, commentCount, showGroup = true }) {
   const [deleting, setDeleting] = useState(false);
   const comments = commentCount ?? post.commentCount;
   const postUrl = `/p/${post.id}`;
@@ -50,7 +50,29 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
           )}
         </header>
 
+        {post.group && showGroup && (
+          <Link href={`/groups/${post.group.slug}`} className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400">
+            in {post.group.name}
+          </Link>
+        )}
+
         <p className="mt-1 whitespace-pre-line break-words">{post.content}</p>
+
+        {post.images?.length > 0 && (
+          <div className={`mt-2 grid gap-1 overflow-hidden rounded-xl ${post.images.length > 1 ? "grid-cols-2" : ""}`}>
+            {post.images.map((src, i) => (
+              <a key={src} href={src} target="_blank" rel="noreferrer" className="block bg-black/5 dark:bg-white/10">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={src}
+                  alt={`Photo ${i + 1} of ${post.images.length} by ${post.author.name}`}
+                  loading="lazy"
+                  className={`w-full object-cover ${post.images.length > 1 ? "aspect-square" : "max-h-[28rem]"}`}
+                />
+              </a>
+            ))}
+          </div>
+        )}
 
         <footer className="-ml-3 mt-2 flex items-center gap-1">
           <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
@@ -64,7 +86,7 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
             </svg>
             <span aria-hidden>{comments}</span>
           </Link>
-          {post.isMine && (
+          {(post.canDelete ?? post.isMine) && (
             <button
               onClick={handleDelete}
               disabled={deleting}

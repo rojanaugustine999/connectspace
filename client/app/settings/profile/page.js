@@ -1,9 +1,10 @@
 "use client";
 
 // Edit profile: PATCH /api/users/me  (requireAuth + Zod validation on the server)
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api";
+import { uploadImage } from "@/lib/upload";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 import Avatar from "@/components/Avatar";
 import FormField from "@/components/FormField";
@@ -16,6 +17,27 @@ export default function EditProfilePage() {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef(null);
+
+  // Upload the photo first (→ url), then put the url in the form. "Save" stores it on the profile.
+  async function pickPhoto(e) {
+    const file = e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploading(true);
+    setErrors((prev) => ({ ...prev, avatarUrl: undefined }));
+    setMessage("");
+    try {
+      const url = await uploadImage(file, "avatars");
+      setForm((prev) => ({ ...prev, avatarUrl: url }));
+      setMessage("Photo uploaded. Press Save to keep it.");
+    } catch (err) {
+      setErrors((prev) => ({ ...prev, avatarUrl: err.message }));
+    } finally {
+      setUploading(false);
+    }
+  }
 
   useEffect(() => {
     if (user) setForm({ name: user.name, bio: user.bio ?? "", avatarUrl: user.avatarUrl ?? "" });
@@ -89,16 +111,31 @@ export default function EditProfilePage() {
           {errors.bio && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.bio}</p>}
         </div>
 
-        <FormField
-          label="Avatar image URL"
-          name="avatarUrl"
-          type="url"
-          placeholder="https://..."
-          value={form.avatarUrl}
-          onChange={update}
-          error={errors.avatarUrl}
-          hint="Paste a link to an image. Real uploads come in Week 7."
-        />
+        <div>
+          <p className="mb-1 text-sm font-medium">Profile photo</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" onChange={pickPhoto} className="hidden" />
+            <button
+              type="button"
+              onClick={() => fileRef.current.click()}
+              disabled={uploading}
+              className="rounded-lg border border-black/15 dark:border-white/20 px-4 py-2 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-50"
+            >
+              {uploading ? "Uploading…" : "📷 Upload photo"}
+            </button>
+            {form.avatarUrl && (
+              <button
+                type="button"
+                onClick={() => setForm((prev) => ({ ...prev, avatarUrl: "" }))}
+                className="px-2 text-sm opacity-70 underline hover:opacity-100"
+              >
+                Remove photo
+              </button>
+            )}
+          </div>
+          {errors.avatarUrl && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.avatarUrl}</p>}
+          <p className="mt-1 text-xs opacity-60">JPG, PNG, GIF or WebP, up to 5 MB.</p>
+        </div>
 
         <div className="flex items-center gap-4">
           <button

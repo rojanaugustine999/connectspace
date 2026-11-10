@@ -15,7 +15,7 @@ const postSchema = new mongoose.Schema(
 
 // Makes the home feed query fast: "posts by these authors, newest first".
 postSchema.index({ authorId: 1, createdAt: -1, _id: -1 });
-postSchema.index({ groupId: 1, createdAt: -1 });
+postSchema.index({ groupId: 1, createdAt: -1, _id: -1 }); // a group's posts, newest first
 // For explore (everyone's posts, newest first).
 postSchema.index({ createdAt: -1, _id: -1 });
 

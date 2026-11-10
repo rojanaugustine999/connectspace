@@ -11,7 +11,10 @@ import userRoutes from "./routes/user.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
 import postRoutes from "./routes/post.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
+import groupRoutes from "./routes/group.routes.js";
+import uploadRoutes from "./routes/upload.routes.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
+import { UPLOAD_DIR } from "./services/storage.service.js";
 
 const app = express();
 
@@ -29,6 +32,18 @@ app.use("/api/users", userRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/conversations", chatRoutes);
+app.use("/api/groups", groupRoutes);
+app.use("/api/uploads", uploadRoutes);
+
+// Locally stored images (development only; production uses Cloudinary).
+// helmet() blocks other sites from loading our files by default, but the Next.js app runs on a
+// different origin (localhost:3000), so images need "Cross-Origin-Resource-Policy: cross-origin".
+app.use(
+  "/uploads",
+  express.static(UPLOAD_DIR, {
+    setHeaders: (res) => res.set("Cross-Origin-Resource-Policy", "cross-origin"),
+  })
+);
 
 // 3. Error handling (always last)
 app.use(notFound);

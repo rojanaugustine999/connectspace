@@ -9,6 +9,7 @@ import { Notification } from "../models/Notification.js";
 import { prisma } from "../config/prisma.js";
 import { httpError } from "../utils/httpError.js";
 import { createNotification } from "./notification.service.js";
+import { getMembership, canViewGroup, isAdmin } from "./group.access.js";
 
 const PAGE_SIZE = 10;
 const authorFields = { id: true, username: true, name: true, avatarUrl: true };
@@ -26,13 +27,27 @@ const deletedUser = { id: null, username: "deleted", name: "Deleted user", avata
 export async function hydratePosts(posts, viewerId) {
   if (posts.length === 0) return [];
 
-  const [authors, myLikes] = await Promise.all([
+  const groupIds = [...new Set(posts.map((p) => p.groupId).filter(Boolean))];
+
+  const [authors, myLikes, groups, adminOf] = await Promise.all([
     loadAuthors(posts.map((p) => p.authorId)), // 1 PostgreSQL query
     viewerId // 1 MongoDB query
       ? Like.find({ userId: viewerId, postId: { $in: posts.map((p) => p._id) } }, { postId: 1 }).lean()
       : [],
+    // Group posts: the group's name/slug, and which of those groups the viewer moderates.
+    groupIds.length
+      ? prisma.group.findMany({ where: { id: { in: groupIds } }, select: { id: true, name: true, slug: true } })
+      : [],
+    groupIds.length && viewerId
+      ? prisma.groupMember.findMany({
+          where: { userId: viewerId, groupId: { in: groupIds }, status: "ACTIVE", role: { in: ["OWNER", "ADMIN"] } },
+          select: { groupId: true },
+        })
+      : [],
   ]);
   const likedIds = new Set(myLikes.map((l) => l.postId.toString()));
+  const groupById = new Map(groups.map((g) => [g.id, g]));
+  const moderated = new Set(adminOf.map((m) => m.groupId));
 
   return posts.map((p) => ({
     id: p._id.toString(),
@@ -42,35 +57,49 @@ export async function hydratePosts(posts, viewerId) {
     commentCount: p.commentCount,
     createdAt: p.createdAt,
     author: authors.get(p.authorId) ?? deletedUser,
+    group: p.groupId ? (groupById.get(p.groupId) ?? null) : null,
     likedByMe: likedIds.has(p._id.toString()),
     isMine: viewerId === p.authorId,
+    // Authors can delete their posts; group admins can also delete posts in their group.
+    canDelete: viewerId === p.authorId || (p.groupId != null && moderated.has(p.groupId)),
   }));
 }
 
-async function findPostOrThrow(postId) {
+// Finds a post AND checks the viewer may see it. A post in a private group is invisible
+// to non-members: we answer 404, so they can't even tell it exists. Every read, like and
+// comment goes through here, so there's no back door around the privacy rule.
+async function findPostOrThrow(postId, viewerId) {
   const post = await Post.findById(postId).lean();
   if (!post) throw httpError(404, "Post not found");
+
+  if (post.groupId) {
+    const group = await prisma.group.findUnique({ where: { id: post.groupId } });
+    if (!group) throw httpError(404, "Post not found");
+    if (!canViewGroup(group, await getMembership(group.id, viewerId))) throw httpError(404, "Post not found");
+  }
   return post;
 }
 
 // ---------- posts ----------
 
-export async function createPost(userId, { content, images = [] }) {
-  const post = await Post.create({ authorId: userId, content, images });
+export async function createPost(userId, { content, images = [] }, groupId = null) {
+  const post = await Post.create({ authorId: userId, content, images, groupId });
   const [hydrated] = await hydratePosts([post.toObject()], userId);
   return hydrated;
 }
 
 export async function getPost(postId, viewerId) {
-  const post = await findPostOrThrow(postId);
+  const post = await findPostOrThrow(postId, viewerId);
   const [hydrated] = await hydratePosts([post], viewerId);
   return hydrated;
 }
 
 export async function deletePost(postId, userId) {
-  const post = await findPostOrThrow(postId);
+  const post = await findPostOrThrow(postId, userId);
+  const isAuthor = post.authorId === userId;
+  const isGroupAdmin = post.groupId ? isAdmin(await getMembership(post.groupId, userId)) : false;
   // 403 Forbidden = "we know who you are, but you're not allowed to do this".
-  if (post.authorId !== userId) throw httpError(403, "You can only delete your own posts");
+  if (!isAuthor && !isGroupAdmin) throw httpError(403, "You can only delete your own posts");
 
   // MongoDB has no foreign keys / ON DELETE CASCADE, so we clean up related documents ourselves.
   await Promise.all([
@@ -102,7 +131,7 @@ function decodeCursor(cursor) {
   return { date, id: new mongoose.Types.ObjectId(id) };
 }
 
-async function paginatePosts(filter, viewerId, cursor) {
+export async function paginatePosts(filter, viewerId, cursor) {
   const query = { ...filter };
   if (cursor) {
     const { date, id } = decodeCursor(cursor);
@@ -121,11 +150,16 @@ async function paginatePosts(filter, viewerId, cursor) {
   };
 }
 
+// Group posts stay inside their group: they never appear on profiles, the home feed or explore.
+// Otherwise a private group's posts would leak to everyone who follows the author.
+// ({ groupId: null } matches documents where groupId is null OR missing.)
+const PERSONAL = { groupId: null };
+
 // Posts by one user, newest first.
 export async function listUserPosts(username, viewerId, cursor) {
   const user = await prisma.user.findUnique({ where: { username }, select: { id: true } });
   if (!user) throw httpError(404, "User not found");
-  return paginatePosts({ authorId: user.id }, viewerId, cursor);
+  return paginatePosts({ ...PERSONAL, authorId: user.id }, viewerId, cursor);
 }
 
 // The home feed: posts from people you follow + your own.
@@ -140,19 +174,19 @@ export async function getFeed(userId, cursor) {
   const follows = await prisma.follow.findMany({ where: { followerId: userId }, select: { followingId: true } });
   const authorIds = [userId, ...follows.map((f) => f.followingId)];
 
-  const result = await paginatePosts({ authorId: { $in: authorIds } }, userId, cursor);
+  const result = await paginatePosts({ ...PERSONAL, authorId: { $in: authorIds } }, userId, cursor);
   return { ...result, followingCount: follows.length };
 }
 
 // Explore: everyone's latest posts (used on the home page when you're logged out).
 export function getExplore(viewerId, cursor) {
-  return paginatePosts({}, viewerId, cursor);
+  return paginatePosts(PERSONAL, viewerId, cursor);
 }
 
 // ---------- likes ----------
 
 export async function likePost(postId, userId) {
-  const post = await findPostOrThrow(postId);
+  const post = await findPostOrThrow(postId, userId);
 
   try {
     // The unique index on { postId, userId } makes MongoDB itself refuse a second like,
@@ -175,7 +209,7 @@ export async function likePost(postId, userId) {
 }
 
 export async function unlikePost(postId, userId) {
-  await findPostOrThrow(postId);
+  await findPostOrThrow(postId, userId);
   const { deletedCount } = await Like.deleteOne({ postId, userId });
 
   // Only decrease if a like was really removed, and never below 0.
@@ -203,7 +237,7 @@ function shapeComment(c, authors, viewerId, postAuthorId) {
 
 // Returns top-level comments, each with a `replies` array (one level deep, like most social apps).
 export async function listComments(postId, viewerId) {
-  const post = await findPostOrThrow(postId);
+  const post = await findPostOrThrow(postId, viewerId);
   const comments = await Comment.find({ postId }).sort({ createdAt: 1 }).limit(500).lean();
   const authors = await loadAuthors(comments.map((c) => c.authorId));
 
@@ -217,7 +251,7 @@ export async function listComments(postId, viewerId) {
 }
 
 export async function addComment(postId, userId, { content, parentId }) {
-  const post = await findPostOrThrow(postId);
+  const post = await findPostOrThrow(postId, userId);
 
   if (parentId) {
     const parent = await Comment.findById(parentId).lean();
@@ -241,7 +275,7 @@ export async function addComment(postId, userId, { content, parentId }) {
 }
 
 export async function deleteComment(postId, commentId, userId) {
-  const post = await findPostOrThrow(postId);
+  const post = await findPostOrThrow(postId, userId);
   const comment = await Comment.findOne({ _id: commentId, postId }).lean();
   if (!comment) throw httpError(404, "Comment not found");
   if (comment.authorId !== userId && post.authorId !== userId) {
