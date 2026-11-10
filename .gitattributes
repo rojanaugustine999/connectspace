@@ -1,0 +1,3 @@
+# Store text files with LF line endings in the repository (what Linux servers like Render/Vercel use),
+# no matter whether they were edited on Windows or macOS.
+* text=auto eol=lf

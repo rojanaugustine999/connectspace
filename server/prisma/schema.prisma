@@ -1,0 +1,67 @@
+// PostgreSQL holds structured, related data: users, follows, groups, memberships.
+// Run `npm run db:migrate` after changing this file.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String   @unique
+  password  String // bcrypt hash, never the plain password
+  name      String
+  avatarUrl String?
+  bio       String?
+  createdAt DateTime @default(now())
+
+  followers Follow[]      @relation("following") // people who follow me
+  following Follow[]      @relation("follower") // people I follow
+  groups    GroupMember[]
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId]) // the same follow can't exist twice
+  @@index([followingId])
+}
+
+model Group {
+  id          String        @id @default(uuid())
+  name        String
+  slug        String        @unique
+  description String?
+  isPrivate   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  members     GroupMember[]
+}
+
+model GroupMember {
+  userId   String
+  groupId  String
+  role     Role     @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@id([userId, groupId])
+  @@index([groupId])
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
