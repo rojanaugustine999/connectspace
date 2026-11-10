@@ -18,12 +18,20 @@ import { UPLOAD_DIR } from "./services/storage.service.js";
 
 const app = express();
 
+// Behind proxies (production: browser → Vercel → Render's load balancer → this app), every request
+// seems to come from the last proxy. "trust proxy" tells Express how many proxies to trust, so
+// req.ip is the real visitor (needed for per-IP rate limiting). Vercel + Render = 2 hops.
+// Leave it unset (0) in development: there's no proxy, and trusting one would let anyone fake their IP.
+app.set("trust proxy", Number(process.env.TRUST_PROXY_HOPS || 0));
+app.disable("x-powered-by"); // don't advertise "Express" in response headers
+
 // 1. Middleware: runs on every request, in this order.
 app.use(helmet()); // security headers
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })); // allow the Next.js app to call us with cookies
-app.use(express.json()); // parse JSON bodies into req.body
+// Only Socket.io and direct API calls need CORS now: the website itself calls /api through the Next.js proxy.
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(express.json({ limit: "100kb" })); // parse JSON bodies into req.body (and refuse huge ones)
 app.use(cookieParser()); // parse cookies into req.cookies (used for the JWT in Week 2)
-app.use(morgan("dev")); // log each request in the terminal
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev")); // request logs
 
 // 2. Routes
 app.use("/api/health", healthRoutes);

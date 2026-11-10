@@ -48,11 +48,21 @@ export function initSocket(httpServer) {
   // Socket middleware: runs once when a client connects.
   // The browser sends our httpOnly JWT cookie with the connection request, so we log in
   // exactly like requireAuth does for REST. No token → connection refused.
+  // Two ways to log in:
+  //   1. handshake.auth.token: a 2-minute socket token from GET /api/auth/socket-token.
+  //      This is what the browser app uses (works when the API is on another domain, as in production).
+  //   2. the session cookie: works when the socket connects to the same site that set the cookie
+  //      (scripts and tests use this).
   io.use((socket, next) => {
-    const token = parseCookies(socket.handshake.headers.cookie)[COOKIE_NAME];
-    if (!token) return next(new Error("unauthorized"));
     try {
-      socket.data.userId = verifyToken(token).sub;
+      const socketToken = socket.handshake.auth?.token;
+      if (socketToken) {
+        socket.data.userId = verifyToken(socketToken, "socket").sub;
+        return next();
+      }
+      const cookieToken = parseCookies(socket.handshake.headers.cookie)[COOKIE_NAME];
+      if (!cookieToken) return next(new Error("unauthorized"));
+      socket.data.userId = verifyToken(cookieToken, "session").sub;
       next();
     } catch {
       next(new Error("unauthorized"));

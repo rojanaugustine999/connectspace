@@ -1,7 +1,13 @@
 // Controllers: read the request, call a service, send the response. Nothing more.
 // Express 5 passes errors thrown in async functions to errorHandler automatically.
 import * as authService from "../services/auth.service.js";
-import { setAuthCookie, clearAuthCookie } from "../utils/token.js";
+import { setAuthCookie, clearAuthCookie, signSocketToken } from "../utils/token.js";
+
+// GET /api/auth/socket-token → { token } valid for 2 minutes, only for opening a Socket.io connection.
+export function socketToken(req, res) {
+  res.set("Cache-Control", "no-store"); // never cache a token
+  res.json({ token: signSocketToken(req.user.id) });
+}
 
 // POST /api/auth/register
 export async function register(req, res) {

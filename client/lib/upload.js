@@ -1,7 +1,7 @@
 // Upload one image: POST /api/uploads/image (multipart/form-data) → { url }
 // api() sends JSON, so uploads use fetch + FormData directly.
 // Don't set Content-Type yourself: the browser adds it with the multipart "boundary".
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = ""; // same site: next.config.mjs proxies /api/* to the Express API
 
 export const MAX_IMAGE_MB = 5;
 const ALLOWED = ["image/jpeg", "image/png", "image/gif", "image/webp"];

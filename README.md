@@ -34,7 +34,10 @@ cd client
 npm run dev
 ```
 
-Open http://localhost:3000. It shows whether the API, PostgreSQL and MongoDB are connected.
+Open http://localhost:3000. The browser only talks to :3000; Next.js forwards `/api/*` to the API on :5000 (see `client/next.config.mjs`).
+http://localhost:3000/status shows whether the API, PostgreSQL and MongoDB are connected.
+
+Copy `client/.env.example` to `client/.env.local` (and `server/.env.example` to `server/.env`) first.
 
 ## Databases
 
@@ -124,4 +127,4 @@ Images are stored in `server/uploads/` in development, or on Cloudinary when `CL
 5. ✅ Home feed + explore + infinite scroll (compound cursor)
 6. ✅ Real-time chat, typing, read receipts + live notifications (Socket.io)
 7. ✅ Groups (public/private, roles, join requests) + image uploads (local / Cloudinary)
-8. Deploy: GitHub → Vercel (client) + Render (API + Socket.io)
+8. ✅ Deploy-ready: Next.js /api proxy (first-party cookie), socket tokens, env checks, render.yaml. See [DEPLOY.md](DEPLOY.md)

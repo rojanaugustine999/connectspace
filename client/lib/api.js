@@ -1,5 +1,6 @@
 // Every call from React to the Express API goes through this one helper.
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+// Relative URLs ("/api/...") go to this same site, and next.config.mjs passes them on to the Express API.
+const API_URL = "";
 
 export async function api(path, options = {}) {
   const hasBody = options.body !== undefined;

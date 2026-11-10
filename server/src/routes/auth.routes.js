@@ -22,5 +22,6 @@ router.post("/register", authLimiter, validate(registerSchema), auth.register);
 router.post("/login", authLimiter, validate(loginSchema), auth.login);
 router.post("/logout", auth.logout);
 router.get("/me", requireAuth, auth.me);
+router.get("/socket-token", requireAuth, auth.socketToken);
 
 export default router;

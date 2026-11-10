@@ -1,0 +1,29 @@
+# Render "Blueprint": describes the API service so Render can create it from this repo.
+# Render → New → Blueprint → pick this GitHub repo. It asks for the values marked `sync: false`.
+services:
+  - type: web
+    name: connectspace-api
+    runtime: node
+    rootDir: server
+    plan: free
+    region: singapore # closest to India (same region as the Neon database)
+    # npm ci installs exactly what package-lock.json says. Then: generate the Prisma client and
+    # apply any new migrations to the production database BEFORE the new code starts.
+    buildCommand: npm ci && npx prisma generate && npx prisma migrate deploy
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY_HOPS
+        value: "2" # browser → Vercel → Render's load balancer → app
+      - key: JWT_SECRET
+        generateValue: true # Render creates a long random secret for you
+      - key: DATABASE_URL
+        sync: false # Neon connection string (direct, not "-pooler")
+      - key: MONGO_URI
+        sync: false # Atlas connection string with /connectspace
+      - key: CLIENT_URL
+        sync: false # your Vercel URL, e.g. https://connectspace.vercel.app (no trailing slash)
+      - key: CLOUDINARY_URL
+        sync: false # from the Cloudinary dashboard: cloudinary://key:secret@cloud_name
