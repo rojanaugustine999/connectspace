@@ -14,10 +14,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Absolute base URL for link previews (og:image must be a full URL). Vercel provides
+// VERCEL_PROJECT_PRODUCTION_URL automatically, e.g. "connectspace-opal.vercel.app".
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
+
+const description = "Follow people, share posts, chat in real time and build communities.";
+
+// The tab icon (app/icon.svg), phone home-screen icon (app/apple-icon.png) and link preview image
+// (app/opengraph-image.png) are picked up automatically by Next.js from their file names.
 export const metadata = {
-  title: "ConnectSpace",
-  description: "A social / community app built with Next.js, Express, PostgreSQL and MongoDB",
+  metadataBase: new URL(siteUrl),
+  title: { default: "ConnectSpace", template: "%s · ConnectSpace" },
+  description,
+  applicationName: "ConnectSpace",
+  openGraph: { type: "website", siteName: "ConnectSpace", title: "ConnectSpace", description },
+  twitter: { card: "summary_large_image", title: "ConnectSpace", description },
 };
+
+// Colours the browser UI (address bar on mobile) to match the brand.
+export const viewport = { themeColor: "#155DFC" };
 
 export default function RootLayout({ children }) {
   return (

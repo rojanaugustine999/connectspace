@@ -1,130 +1,158 @@
-# ConnectSpace
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/logo-dark.svg">
+    <img src="docs/brand/logo-light.svg" alt="ConnectSpace" width="300">
+  </picture>
+</p>
 
-A social / community app for learning full-stack development.
+<p align="center">
+  <strong>A real-time social app: follow people, share posts, chat live and build communities.</strong><br>
+  Next.js · Express · PostgreSQL · MongoDB · Socket.io
+</p>
 
-| Part | Tech | Folder |
-|---|---|---|
-| Frontend | Next.js (React) + Tailwind | `client/` |
-| API | Node.js + Express | `server/` |
-| Relational data | PostgreSQL via Prisma | `server/prisma/schema.prisma` |
-| Flexible data | MongoDB via Mongoose | `server/src/models/` |
+<p align="center">
+  <a href="https://connectspace-opal.vercel.app"><strong>Live demo</strong></a> ·
+  <a href="docs/CASE_STUDY.md">Case study</a> ·
+  <a href="docs/API.md">API reference</a> ·
+  <a href="DEPLOY.md">Deployment guide</a>
+</p>
 
-**PostgreSQL:** users, follows, groups, memberships
-**MongoDB:** posts, comments, likes, chats, messages, notifications
+<p align="center">
+  <img src="docs/screenshots/home.png" alt="ConnectSpace home page with the latest posts" width="900">
+</p>
 
-## Request flow
+> **Try it:** log in as `alice@demo.test` / `password123` (a shared demo account; anything you post is public).
+> The free API server sleeps when idle, so the first load can take up to a minute.
 
-```
-Browser (React) → fetch → Express route → middleware → controller → service → Prisma / Mongoose → DB
-                                                                                       ↓
-Browser ← JSON response ←──────────────────────────────────────────────────────────────┘
-```
+## Features
 
-## Run it (two terminals)
+- **Accounts:** sign up, log in, profile photo and bio. Passwords hashed with bcrypt; JWT in an `httpOnly` cookie
+- **Social graph:** follow and unfollow, followers/following lists, people search
+- **Feed:** posts from people you follow, with **infinite scroll**, photos (up to 4), likes and threaded comments
+- **Real time:** one-to-one chat with **typing indicators** and **read receipts**, plus **live notifications** and unread badges (Socket.io)
+- **Groups:** public or private, owner/admin/member roles, join requests, group-only posts
+- **Production details:** per-visitor rate limiting, private content hidden as 404, image type checks, graceful shutdown
 
-```bash
-# Terminal 1: API on http://localhost:5000
-cd server
-npm run dev
-```
+## Screenshots
 
-```bash
-# Terminal 2: website on http://localhost:3000
-cd client
-npm run dev
-```
-
-Open http://localhost:3000. The browser only talks to :3000; Next.js forwards `/api/*` to the API on :5000 (see `client/next.config.mjs`).
-http://localhost:3000/status shows whether the API, PostgreSQL and MongoDB are connected.
-
-Copy `client/.env.example` to `client/.env.local` (and `server/.env.example` to `server/.env`) first.
-
-## Databases
-
-Set `DATABASE_URL` and `MONGO_URI` in `server/.env` (see `server/.env.example`).
-
-- **PostgreSQL:** free cloud database at https://neon.tech, or install locally
-- **MongoDB:** free cloud cluster at https://www.mongodb.com/atlas, or install locally
-
-Then create the PostgreSQL tables:
-
-```bash
-cd server
-npm run db:migrate -- --name init
-```
-
-`npm run db:studio` opens a visual browser for your PostgreSQL tables.
-
-## Demo users
-
-```bash
-cd server
-npm run db:seed
-```
-
-Creates alice, bob, chen, divya and emma with follows (PostgreSQL) and 17 posts + likes (MongoDB). Safe to run again.
-Log in as `<username>@demo.test` with password `password123`.
-
-## API
-
-| Method | Route | Auth |
-|---|---|---|
-| POST | `/api/auth/register` · `/login` · `/logout` | – |
-| GET | `/api/auth/me` | required |
-| GET | `/api/users/search?q=` | optional |
-| PATCH | `/api/users/me` | required |
-| GET | `/api/users/:username` | optional |
-| POST / DELETE | `/api/users/:username/follow` | required |
-| GET | `/api/users/:username/followers?page=` · `/following?page=` | optional |
-| GET | `/api/notifications` · `/unread-count` | required |
-| PATCH | `/api/notifications/read` | required |
-| POST | `/api/posts` | required |
-| GET / DELETE | `/api/posts/:id` | optional / author only |
-| POST / DELETE | `/api/posts/:id/like` | required |
-| GET / POST | `/api/posts/:id/comments` | optional / required |
-| DELETE | `/api/posts/:id/comments/:commentId` | comment or post author |
-| GET | `/api/users/:username/posts?cursor=` | optional |
-| GET | `/api/posts/feed?cursor=` | required |
-| GET | `/api/posts/explore?cursor=` | optional |
-| GET / POST | `/api/conversations` (POST `{ username }` opens or creates a chat) | required |
-| GET | `/api/conversations/unread-count` | required |
-| GET | `/api/conversations/:id` · `/:id/messages?cursor=` | participants only |
-| POST | `/api/conversations/:id/messages` · `/:id/read` | participants only |
-
-### Groups and uploads
-
-| Method | Route | Who |
-|---|---|---|
-| GET / POST | `/api/groups?q=` / `/api/groups` | anyone / logged in |
-| GET | `/api/groups/mine` | logged in |
-| GET · PATCH · DELETE | `/api/groups/:slug` | anyone · admins · owner |
-| POST / DELETE | `/api/groups/:slug/join` (join, request, leave, cancel) | logged in |
-| GET | `/api/groups/:slug/members[?status=PENDING]` | viewers / admins |
-| POST | `/api/groups/:slug/members/:userId/approve` | admins |
-| PATCH | `/api/groups/:slug/members/:userId` `{ role }` | owner |
-| DELETE | `/api/groups/:slug/members/:userId` (remove / reject) | admins |
-| GET / POST | `/api/groups/:slug/posts` | viewers / members |
-| POST | `/api/uploads/image?folder=avatars\|posts` (multipart, field `image`) | logged in |
-
-Group posts never appear in profiles, the home feed or explore. Posts in private groups return 404 to non-members.
-Images are stored in `server/uploads/` in development, or on Cloudinary when `CLOUDINARY_URL` is set.
-
-## Socket.io events (same port as the API, logged in with the JWT cookie)
-
-| Client sends | Server pushes |
+| Profile | People |
 |---|---|
-| `message:send` `{ conversationId, text, clientId }` (with ack) | `message:new` `{ message, clientId }` |
-| `typing` `{ conversationId, isTyping }` | `typing` `{ conversationId, userId, isTyping }` |
-| `messages:read` `{ conversationId }` | `messages:read` `{ conversationId, userId }` |
-| | `notification:new` `{ notification }` |
+| <img src="docs/screenshots/profile.png" alt="Profile page"> | <img src="docs/screenshots/people.png" alt="People search"> |
 
-## Roadmap
+| Sign up | On a phone |
+|---|---|
+| <img src="docs/screenshots/signup.png" alt="Sign-up form"> | <img src="docs/screenshots/mobile-profile.png" alt="Profile on a phone" width="260"> |
 
-1. ✅ Setup: Express, both databases, health check
-2. ✅ Auth: register, login, JWT cookie
-3. ✅ Profiles, follow / unfollow, people search, follow notifications
-4. ✅ Posts, likes, comments (with replies)
-5. ✅ Home feed + explore + infinite scroll (compound cursor)
-6. ✅ Real-time chat, typing, read receipts + live notifications (Socket.io)
-7. ✅ Groups (public/private, roles, join requests) + image uploads (local / Cloudinary)
-8. ✅ Deploy-ready: Next.js /api proxy (first-party cookie), socket tokens, env checks, render.yaml. See [DEPLOY.md](DEPLOY.md)
+## Architecture
+
+```mermaid
+flowchart LR
+  B([Browser]) -->|pages + /api/*| V["Vercel<br/>Next.js 15 (React 19)"]
+  V -->|"proxy /api/* + signed visitor IP"| R["Render<br/>Express 5 API"]
+  B <-->|"Socket.io (2-min token)"| R
+  R -->|Prisma| P[("PostgreSQL · Neon<br/>users · follows · groups")]
+  R -->|Mongoose| M[("MongoDB · Atlas<br/>posts · comments · likes<br/>chats · notifications")]
+  R --> C[("Cloudinary<br/>images")]
+```
+
+- The browser only talks to **one site** (Vercel). Next.js forwards `/api/*` to Express, so the login cookie is first-party and works in Safari.
+- **Socket.io** can't go through that proxy, so it connects straight to the API with a short-lived token fetched through it.
+- **Two databases, each for what it's good at:** PostgreSQL for relationships that need strict rules, and MongoDB for high-volume, flexible documents. The API merges them (no cross-database JOIN), always with a fixed number of queries.
+
+### A request, step by step
+
+```mermaid
+sequenceDiagram
+  participant UI as React page
+  participant N as Next.js proxy
+  participant E as Express
+  participant PG as PostgreSQL
+  participant MG as MongoDB
+  UI->>N: GET /api/posts/feed?cursor=…
+  N->>E: forward (+ visitor IP, signed)
+  E->>E: requireAuth: check JWT cookie
+  E->>PG: who does this user follow?
+  E->>MG: their posts, newest first (limit 11)
+  E->>PG: authors' names + avatars (1 query)
+  E-->>UI: { posts: [10], nextCursor }
+```
+
+## Tech stack
+
+| Layer | Tools |
+|---|---|
+| Frontend | Next.js 15 (App Router), React 19, Tailwind CSS 4 |
+| API | Node.js, Express 5, Zod validation, Socket.io, Multer |
+| Data | PostgreSQL + Prisma 6 (Neon), MongoDB + Mongoose (Atlas), Cloudinary |
+| Security | bcrypt, JWT (`httpOnly` cookie), Helmet, express-rate-limit |
+| Hosting | Vercel (website), Render (API, `render.yaml` blueprint) |
+
+## Engineering highlights
+
+| Problem | Solution |
+|---|---|
+| Two likes at the same moment | Unique index `{ postId, userId }` + atomic `$inc` counter |
+| Posts skipped while scrolling | Cursor pagination on `createdAt` **and** `_id` |
+| Feed queries growing per post (N+1) | Load authors and "liked by me" for a whole page in one query each |
+| Private group posts leaking | Every read, like and comment path checks access; outsiders get 404 |
+| Fake uploads | Check the file's real bytes (magic numbers), cap at 5 MB, random file names |
+| Rate limits shared by everyone behind proxies | Proxy signs the visitor IP with a shared secret; hop count measured |
+| Chat "Sending…" bubbles duplicating | Client-generated `clientId` echoed by the server |
+
+The full story, from a UI/UX point of view, is in the **[case study](docs/CASE_STUDY.md)**.
+
+## Run it locally
+
+You need Node.js 20+, a PostgreSQL database and a MongoDB database (the free tiers of [Neon](https://neon.tech) and [Atlas](https://www.mongodb.com/atlas) work).
+
+```bash
+git clone https://github.com/rojanaugustine999/connectspace.git
+cd connectspace
+```
+
+```bash
+cd server
+cp .env.example .env          # fill in DATABASE_URL, MONGO_URI, JWT_SECRET
+npm install
+npx prisma migrate deploy     # create the PostgreSQL tables
+npm run db:seed               # demo users, follows, posts and likes
+npm run dev                   # API on http://localhost:5000
+```
+
+```bash
+cd client
+cp .env.example .env.local
+npm install
+npm run dev                   # website on http://localhost:3000
+```
+
+Open http://localhost:3000 and log in as `alice@demo.test` / `password123`.
+http://localhost:3000/status shows whether the API and both databases are connected.
+
+## Project structure
+
+```
+client/                 Next.js website
+  app/                  pages (feed, profiles, posts, messages, groups, settings…)
+  components/           PostCard, ChatWindow, FollowButton, Logo…
+  lib/                  api helper, auth + socket contexts
+  middleware.js         passes the signed visitor IP to the API
+server/                 Express API
+  prisma/               PostgreSQL schema, migrations, seed script
+  src/routes/           URL → middleware → controller
+  src/services/         business logic (feed, chat, groups, uploads…)
+  src/models/           MongoDB models
+  src/socket/           Socket.io: login, chat, typing, live events
+docs/                   case study, API reference, screenshots, brand
+render.yaml             Render blueprint for the API
+```
+
+## Documentation
+
+- **[Case study](docs/CASE_STUDY.md):** design goals, decisions and lessons learned
+- **[API reference](docs/API.md):** REST routes, Socket.io events and error codes
+- **[Deployment guide](DEPLOY.md):** Neon, Atlas, Cloudinary, Render and Vercel, step by step
+
+## Credits
+
+Designed and built by **[Rojan Augustine](https://github.com/rojanaugustine999)**, a UI/UX designer and frontend developer learning the full stack, with Claude (Claude Code) as a pair programmer.

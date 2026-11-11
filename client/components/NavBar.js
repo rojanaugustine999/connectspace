@@ -7,6 +7,7 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useSocketEvent } from "@/lib/socket-context";
 import Avatar from "@/components/Avatar";
+import Logo from "@/components/Logo";
 
 function Badge({ count }) {
   if (count <= 0) return null;
@@ -16,6 +17,48 @@ function Badge({ count }) {
       {count > 9 ? "9+" : count}
       <span className="sr-only"> unread</span>
     </span>
+  );
+}
+
+// Line icons for the phone nav (the text labels show from the "sm" breakpoint up).
+// Same 2px stroke style as the like/comment icons, so the UI uses one icon language.
+const ICONS = {
+  people: (
+    <>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </>
+  ),
+  groups: (
+    <>
+      <circle cx="9" cy="8" r="3.5" />
+      <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+      <path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14a6.5 6.5 0 0 1 3 6" />
+    </>
+  ),
+  messages: <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" />,
+  notifications: (
+    <>
+      <path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z" />
+      <path d="M10 20a2 2 0 0 0 4 0" />
+    </>
+  ),
+};
+
+function NavIcon({ name }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="size-5 sm:hidden"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {ICONS[name]}
+    </svg>
   );
 }
 
@@ -80,29 +123,30 @@ export default function NavBar() {
   return (
     <header className="sticky top-0 z-10 h-14 border-b border-black/10 dark:border-white/10 bg-background/90 backdrop-blur">
       <nav className="mx-auto flex h-full max-w-3xl items-center gap-1 px-4">
-        <Link href="/" className="mr-auto font-bold">
-          ConnectSpace
+        <Link href="/" aria-label="ConnectSpace home" className="mr-auto rounded-lg">
+          {/* On phones only the icon shows, to leave room for the nav links. */}
+          <Logo wordmark="responsive" />
         </Link>
 
         <NavLink href="/people" active={pathname === "/people"}>
           <span className="sr-only sm:not-sr-only">People</span>
-          <span aria-hidden className="sm:hidden">🔍</span>
+          <NavIcon name="people" />
         </NavLink>
         <NavLink href="/groups" active={pathname.startsWith("/groups")}>
           <span className="sr-only sm:not-sr-only">Groups</span>
-          <span aria-hidden className="sm:hidden">👥</span>
+          <NavIcon name="groups" />
         </NavLink>
 
         {!loading && user && (
           <>
             <NavLink href="/messages" active={pathname.startsWith("/messages")}>
               <span className="sr-only sm:not-sr-only">Messages</span>
-              <span aria-hidden className="sm:hidden">💬</span>
+              <NavIcon name="messages" />
               <Badge count={unreadMessages} />
             </NavLink>
             <NavLink href="/notifications" active={pathname === "/notifications"}>
               <span className="sr-only sm:not-sr-only">Notifications</span>
-              <span aria-hidden className="sm:hidden">🔔</span>
+              <NavIcon name="notifications" />
               <Badge count={unread} />
             </NavLink>
             <Link href={`/u/${user.username}`} className="ml-1 rounded-full" aria-label="Your profile">
