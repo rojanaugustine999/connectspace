@@ -21,9 +21,15 @@ export function errorHandler(err, req, res, next) {
     message = "Invalid JSON";
   }
 
+  // Two kinds of server errors:
+  // - Expected: thrown on purpose with httpError(), e.g. httpError(502, "Could not store the image…").
+  //   Its message was written for users, so send it as is.
+  // - Unexpected: a bug or crash (no .status). Its message might reveal internals (file paths,
+  //   SQL…), so log the details for us and send only a generic message to the browser.
+  const expected = Boolean(err.status);
   if (status >= 500) {
-    console.error(err);
-    message = "Something went wrong"; // don't leak internal details to the browser
+    console.error(expected ? `${status} ${message}` : err);
+    if (!expected) message = "Something went wrong";
   }
 
   res.status(status).json({ error: message, ...(err.details && { details: err.details }) });

@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import Avatar from "@/components/Avatar";
 
 export default function MePage() {
   const { user, loading, logout } = useAuth();
@@ -31,9 +32,8 @@ export default function MePage() {
     <main className="min-h-[calc(100dvh-3.5rem)] flex items-center justify-center p-4 font-sans">
       <div className="w-full max-w-sm rounded-2xl border border-black/10 dark:border-white/15 p-6">
         <div className="flex items-center gap-4">
-          <div className="size-14 shrink-0 rounded-full bg-blue-600 text-white grid place-items-center text-xl font-bold">
-            {user.name.charAt(0).toUpperCase()}
-          </div>
+          {/* The shared Avatar: shows the uploaded photo, or the same colour as everywhere else. */}
+          <Avatar user={user} size="md" />
           <div className="min-w-0">
             <h1 className="text-xl font-bold truncate">{user.name}</h1>
             <p className="text-sm opacity-70 truncate">@{user.username}</p>

@@ -16,7 +16,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: TRUST_PROXY_HOPS
-        value: "2" # browser → Vercel → Render's load balancer → app
+        value: "3" # direct API calls: Render's edge network + load balancer (measured; 2 was too few)
+      - key: PROXY_SECRET
+        sync: false # same random value as PROXY_SECRET on Vercel; proves a request came through our proxy
       - key: JWT_SECRET
         generateValue: true # Render creates a long random secret for you
       - key: DATABASE_URL

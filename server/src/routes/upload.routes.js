@@ -2,8 +2,8 @@
 // → { url }   The client then saves that URL, e.g. PATCH /api/users/me { avatarUrl: url }.
 import { Router } from "express";
 import multer from "multer";
-import rateLimit from "express-rate-limit";
 import { requireAuth } from "../middleware/auth.js";
+import { limiter } from "../middleware/rateLimit.js";
 import { httpError } from "../utils/httpError.js";
 import { saveImage, MAX_IMAGE_BYTES } from "../services/storage.service.js";
 
@@ -17,12 +17,10 @@ const upload = multer({
 });
 
 // Uploads cost storage and bandwidth: max 30 per 10 minutes per IP.
-const uploadLimiter = rateLimit({
+const uploadLimiter = limiter({
   windowMs: 10 * 60 * 1000,
   limit: 30,
-  standardHeaders: "draft-7",
-  legacyHeaders: false,
-  message: { error: "Too many uploads, please wait a few minutes" },
+  message: "Too many uploads, please wait a few minutes",
 });
 
 // Turns multer's errors (e.g. file too big) into our normal { error } responses.
