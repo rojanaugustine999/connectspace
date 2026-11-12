@@ -94,14 +94,13 @@ The biggest lesson: **a vague error message is a design problem.** Half of these
 
 - **Live** on Vercel (website) and Render (API), with PostgreSQL, MongoDB and Cloudinary
 - Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos, likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, and **public and private groups** with roles
-- Around **145 scripted end-to-end checks** run during development, including security checks (faked IP addresses, disguised image files, outsiders opening private group posts)
+- **41 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
 
 ## What I'd do next
 
-1. Run the test scripts automatically on every push (GitHub Actions)
-2. Usability-test with five people, focusing on group privacy, which is the most complex flow
-3. Separate development and live databases
-4. Dark mode polish and a design token file shared by Figma and code
+1. Usability-test with five people, focusing on group privacy, which is the most complex flow
+2. Separate development and live databases
+3. Dark mode polish and a design token file shared by Figma and code
 
 ## How I built it
 

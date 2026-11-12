@@ -11,6 +11,10 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/rojanaugustine999/connectspace/actions/workflows/ci.yml"><img src="https://github.com/rojanaugustine999/connectspace/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+</p>
+
+<p align="center">
   <a href="https://connectspace-opal.vercel.app"><strong>Live demo</strong></a> ·
   <a href="docs/CASE_STUDY.md">Case study</a> ·
   <a href="docs/API.md">API reference</a> ·
@@ -32,6 +36,7 @@
 - **Real time:** one-to-one chat with **typing indicators** and **read receipts**, plus **live notifications** and unread badges (Socket.io)
 - **Groups:** public or private, owner/admin/member roles, join requests, group-only posts
 - **Production details:** per-visitor rate limiting, private content hidden as 404, image type checks, graceful shutdown
+- **Tested:** 41 automated API tests (real HTTP and Socket.io clients against real databases) run on every push in [GitHub Actions](.github/workflows/ci.yml)
 
 ## Screenshots
 
@@ -144,6 +149,10 @@ npm run dev                   # website on http://localhost:3000
 
 Open http://localhost:3000 and log in as `alice@demo.test` / `password123`.
 http://localhost:3000/status shows whether the API and both databases are connected.
+
+### Tests
+
+The API tests live in `server/tests` and run on every push (see the CI badge). GitHub Actions starts throwaway PostgreSQL and MongoDB databases, so your real data is never touched. To run them locally you need your own local test databases: copy `server/.env.test.example` to `server/.env.test`, then run `npm test` in `server`. The tests refuse to start if the databases aren't on localhost.
 
 ## Project structure
 
