@@ -3,6 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { SocketProvider } from "@/lib/socket-context";
 import NavBar from "@/components/NavBar";
+import WakingBanner from "@/components/WakingBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <SocketProvider>
             <NavBar />
+            <WakingBanner />
             {children}
           </SocketProvider>
         </AuthProvider>
