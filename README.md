@@ -31,7 +31,8 @@
 ## Features
 
 - **Accounts:** sign up, log in, profile photo and bio. Passwords hashed with bcrypt; JWT in an `httpOnly` cookie
-- **Social graph:** follow and unfollow, followers/following lists, people search
+- **Social graph:** follow and unfollow, followers/following lists
+- **Search:** people by name or @username, and posts by word (MongoDB text search, best match first, matching words highlighted; private group posts only for members)
 - **Feed:** posts from people you follow, with **infinite scroll**, photos (up to 4), likes and threaded comments
 - **Real time:** one-to-one chat with **typing indicators** and **read receipts**, plus **live notifications**, **@mentions** with suggestions as you type, and unread badges (Socket.io)
 - **Groups:** public or private, owner/admin/member roles, join requests, group-only posts
@@ -58,6 +59,10 @@
 | Live notifications | Your profile |
 |---|---|
 | <img src="docs/screenshots/notifications.png" alt="Notifications: new followers"> | <img src="docs/screenshots/my-profile.png" alt="Your own profile with photo, posts and the post composer"> |
+
+### Search posts and people
+
+<img src="docs/screenshots/search.png" alt="Search page with the Posts tab open: searching 'macaw' finds Alice's post with the word highlighted" width="700">
 
 ### Dark mode and @mentions
 
@@ -183,6 +188,7 @@ render.yaml             Render blueprint for the API
 
 - **[Case study](docs/CASE_STUDY.md):** design goals, decisions and lessons learned
 - **[API reference](docs/API.md):** REST routes, Socket.io events and error codes
+- **[Usability test kit](docs/usability-test/README.md):** script, tasks, notes sheet and findings template for a 5-person test
 - **[Deployment guide](DEPLOY.md):** Neon, Atlas, Cloudinary, Render and Vercel, step by step
 
 ## Credits

@@ -24,6 +24,7 @@ so authentication is a first-party `httpOnly` cookie. All bodies are JSON unless
 | POST | `/api/posts` | required |
 | GET | `/api/posts/feed?cursor=` (people you follow + you) | required |
 | GET | `/api/posts/explore?cursor=` (everyone) | optional |
+| GET | `/api/posts/search?q=&cursor=` (text search, best match first; cursor is a page number, max 5 pages) | optional |
 | GET / DELETE | `/api/posts/:id` | optional / author or group admin |
 | POST / DELETE | `/api/posts/:id/like` | required |
 | GET / POST | `/api/posts/:id/comments` | optional / required |

@@ -64,6 +64,11 @@ Components never use raw colours. They use named tokens like `surface`, `line`, 
 
 The @mention list is an accessible combobox: arrow keys move through people, Enter picks one, Escape closes it, and screen readers hear who is highlighted. On the server, only real usernames count, and in a private group only members are notified, so a notification never reveals a post someone can't open.
 
+### 7. Search that explains itself
+<img src="screenshots/search.png" width="600" alt="Searching 'macaw' finds Alice's post with the word highlighted">
+
+One Search page with **People** and **Posts** tabs, instead of two separate pages. Posts are found with a MongoDB text index, which matches whole words and their stems ("walks" finds "walking") and ranks the best match first. Because that's different from how people expect a search box to behave, the design does the explaining: the matching words are **highlighted** so you can see *why* a post was found, and the empty states teach the rule ("Try a whole word instead of part of one"). The search lives in the URL, so a search can be shared and the Back button works. Private group posts only appear for members, using the same rule as everywhere else.
+
 ## The brand
 
 <img src="brand/logo-mark.svg" width="56" alt="ConnectSpace logo mark"> **Two interlocking rings: two people, one shared space.**
@@ -107,7 +112,7 @@ The biggest lesson: **a vague error message is a design problem.** Half of these
 
 ## What I'd do next
 
-1. Usability-test with five people, focusing on group privacy, which is the most complex flow
+1. Usability-test with five people, focusing on search, @mentions and group privacy. The [test kit](usability-test/README.md) (script, six tasks, notes sheet and findings template) is ready
 2. Separate development and live databases
 3. Spacing and type tokens, to finish the design system started with colour
 
