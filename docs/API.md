@@ -26,6 +26,7 @@ so authentication is a first-party `httpOnly` cookie. All bodies are JSON unless
 | GET | `/api/posts/explore?cursor=` (everyone) | optional |
 | GET | `/api/posts/search?q=&cursor=` (text search, best match first; cursor is a page number, max 5 pages) | optional |
 | GET / DELETE | `/api/posts/:id` | optional / author or group admin |
+| PATCH | `/api/posts/:id` `{ content }` (text only; sets `editedAt`; new @mentions notify once) | author only |
 | POST / DELETE | `/api/posts/:id/like` | required |
 | GET / POST | `/api/posts/:id/comments` | optional / required |
 | DELETE | `/api/posts/:id/comments/:commentId` | comment or post author |

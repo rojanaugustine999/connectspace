@@ -143,8 +143,8 @@ Two safety rules: the server asks the API as a logged-out visitor, so private gr
 
 - **Live** on Vercel (website) and Render (API), with PostgreSQL, MongoDB and Cloudinary
 - **Accessibility 100, and performance 99–100 on a phone for the home, profile and post pages,** in Lighthouse on the live site, with 0 axe issues in light and dark mode
-- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos, likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, **post search**, link previews for shared posts and profiles, light and dark themes, and **public and private groups** with roles
-- **49 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
+- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos (editable afterwards, with an "edited" label), likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, **post search**, link previews for shared posts and profiles, light and dark themes, and **public and private groups** with roles
+- **54 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
 
 ## What I'd do next
 
