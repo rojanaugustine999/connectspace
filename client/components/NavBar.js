@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useSocketEvent } from "@/lib/socket-context";
-import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
+import UserMenu from "@/components/UserMenu";
 
 function Badge({ count }) {
   if (count <= 0) return null;
@@ -149,9 +149,7 @@ export default function NavBar() {
               <NavIcon name="notifications" />
               <Badge count={unread} />
             </NavLink>
-            <Link href={`/u/${user.username}`} className="ml-1 rounded-full" aria-label="Your profile">
-              <Avatar user={user} size="sm" />
-            </Link>
+            <UserMenu />
           </>
         )}
 
