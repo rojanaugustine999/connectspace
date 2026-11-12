@@ -58,6 +58,12 @@ One accent blue, one icon style (2px line icons), one avatar component that show
 ### 6. Colours as design tokens, so dark mode is free
 Components never use raw colours. They use named tokens like `surface`, `line`, `link` and `danger`, and light and dark are two sets of values for the same names. The site follows the device setting, and the account menu lets people choose Auto, Light or Dark (saved on their device and applied before the page paints, so there's no white flash). The same tokens are exported to [design-tokens.json](design-tokens.json), ready to import as Figma variables with a light and a dark mode, so design and code share one source of truth.
 
+| Dark mode | @mention suggestions |
+|---|---|
+| <img src="screenshots/dark-feed.png" alt="Home feed in dark mode"> | <img src="screenshots/dark-mentions.png" alt="Typing @ali suggests Alice Johnson"> |
+
+The @mention list is an accessible combobox: arrow keys move through people, Enter picks one, Escape closes it, and screen readers hear who is highlighted. On the server, only real usernames count, and in a private group only members are notified, so a notification never reveals a post someone can't open.
+
 ## The brand
 
 <img src="brand/logo-mark.svg" width="56" alt="ConnectSpace logo mark"> **Two interlocking rings: two people, one shared space.**
@@ -96,7 +102,7 @@ The biggest lesson: **a vague error message is a design problem.** Half of these
 ## Outcome
 
 - **Live** on Vercel (website) and Render (API), with PostgreSQL, MongoDB and Cloudinary
-- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos, likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, and **public and private groups** with roles
+- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos, likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, light and dark themes, and **public and private groups** with roles
 - **41 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
 
 ## What I'd do next

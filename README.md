@@ -33,7 +33,7 @@
 - **Accounts:** sign up, log in, profile photo and bio. Passwords hashed with bcrypt; JWT in an `httpOnly` cookie
 - **Social graph:** follow and unfollow, followers/following lists, people search
 - **Feed:** posts from people you follow, with **infinite scroll**, photos (up to 4), likes and threaded comments
-- **Real time:** one-to-one chat with **typing indicators** and **read receipts**, plus **live notifications** and unread badges (Socket.io)
+- **Real time:** one-to-one chat with **typing indicators** and **read receipts**, plus **live notifications**, **@mentions** with suggestions as you type, and unread badges (Socket.io)
 - **Groups:** public or private, owner/admin/member roles, join requests, group-only posts
 - **Light and dark themes:** built on [design tokens](docs/design-tokens.json) shared with Figma; follows the device setting, or pick one in the account menu
 - **Production details:** per-visitor rate limiting, private content hidden as 404, image type checks, graceful shutdown
@@ -58,6 +58,12 @@
 | Live notifications | Your profile |
 |---|---|
 | <img src="docs/screenshots/notifications.png" alt="Notifications: new followers"> | <img src="docs/screenshots/my-profile.png" alt="Your own profile with photo, posts and the post composer"> |
+
+### Dark mode and @mentions
+
+| Dark mode (follows your device, or pick it in the account menu) | Typing "@" suggests people to mention |
+|---|---|
+| <img src="docs/screenshots/dark-feed.png" alt="Home feed in dark mode, with a post mentioning @alice shown as a link"> | <img src="docs/screenshots/dark-mentions.png" alt="Typing @ali in the post box shows Alice Johnson as a suggestion"> |
 
 ### Logged out and on a phone
 
