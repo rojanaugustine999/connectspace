@@ -7,6 +7,8 @@ const postSchema = new mongoose.Schema(
     groupId: { type: String, default: null },
     content: { type: String, required: true, trim: true, maxlength: 2000 },
     images: [{ type: String }],
+    // Photo descriptions for screen readers ("alt text"), in the same order as `images`; "" = none.
+    imageDescriptions: [{ type: String, trim: true, maxlength: 200 }],
     likeCount: { type: Number, default: 0 },
     commentCount: { type: Number, default: 0 },
     editedAt: { type: Date, default: null }, // set when the author changes the text

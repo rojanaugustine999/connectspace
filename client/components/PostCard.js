@@ -10,6 +10,32 @@ import Avatar from "@/components/Avatar";
 import LikeButton from "@/components/LikeButton";
 import MentionField from "@/components/MentionField";
 
+// A post photo plus, when it has a description, an "ALT" badge that shows the description to
+// sighted readers too (screen readers already hear it as the photo's alt text).
+function PostPhoto({ description, children }) {
+  const [open, setOpen] = useState(false);
+  if (!description) return children;
+  return (
+    <div className="relative">
+      {children}
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-label={open ? "Hide photo description" : "Show photo description"}
+        className="absolute bottom-2 left-2 z-10 rounded bg-black/75 px-1.5 py-0.5 text-[11px] font-bold tracking-wide text-white hover:bg-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+      >
+        ALT
+      </button>
+      {open && (
+        <p className="absolute inset-x-0 bottom-0 max-h-full overflow-auto bg-black/80 p-3 pl-14 text-sm text-white">
+          {description}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function PostCard({ post, onDeleted, linkToPost = true, commentCount, showGroup = true, highlight, priority = false }) {
   const [deleting, setDeleting] = useState(false);
   const comments = commentCount ?? post.commentCount;
@@ -143,23 +169,25 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
         {post.images?.length > 0 && (
           <div className={`mt-2 grid gap-1 overflow-hidden rounded-xl ${post.images.length > 1 ? "grid-cols-2" : ""}`}>
             {post.images.map((src, i) => (
-              <a key={src} href={src} target="_blank" rel="noreferrer" className="block bg-subtle">
-                {/* Fixed shapes (4:3 for one photo, squares for several) reserve the space before the
-                    photo arrives, so the page doesn't jump. The first post's photo loads first (priority). */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={optimizedImage(src, post.images.length > 1 ? 600 : 1200)}
-                  // Let the browser pick the smallest copy that's still sharp: a phone gets ~600px, desktop 1200px.
-                  srcSet={[400, 600, 900, 1200].map((w) => `${optimizedImage(src, w)} ${w}w`).join(", ")}
-                  sizes={post.images.length > 1 ? "(max-width: 640px) 45vw, 300px" : "(max-width: 640px) 90vw, 600px"}
-                  alt={`Photo ${i + 1} of ${post.images.length} by ${post.author.name}`}
-                  width={post.images.length > 1 ? 600 : 1200}
-                  height={post.images.length > 1 ? 600 : 900}
-                  loading={priority && i === 0 ? "eager" : "lazy"}
-                  fetchPriority={priority && i === 0 ? "high" : "auto"}
-                  className={`h-auto w-full object-cover ${post.images.length > 1 ? "aspect-square" : "aspect-[4/3]"}`}
-                />
-              </a>
+              <PostPhoto key={src} description={post.imageDescriptions?.[i]}>
+                <a href={src} target="_blank" rel="noreferrer" className="block bg-subtle">
+                  {/* Fixed shapes (4:3 for one photo, squares for several) reserve the space before the
+                      photo arrives, so the page doesn't jump. The first post's photo loads first (priority). */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={optimizedImage(src, post.images.length > 1 ? 600 : 1200)}
+                    // Let the browser pick the smallest copy that's still sharp: a phone gets ~600px, desktop 1200px.
+                    srcSet={[400, 600, 900, 1200].map((w) => `${optimizedImage(src, w)} ${w}w`).join(", ")}
+                    sizes={post.images.length > 1 ? "(max-width: 640px) 45vw, 300px" : "(max-width: 640px) 90vw, 600px"}
+                    alt={post.imageDescriptions?.[i] || `Photo ${i + 1} of ${post.images.length} by ${post.author.name}`}
+                    width={post.images.length > 1 ? 600 : 1200}
+                    height={post.images.length > 1 ? 600 : 900}
+                    loading={priority && i === 0 ? "eager" : "lazy"}
+                    fetchPriority={priority && i === 0 ? "high" : "auto"}
+                    className={`h-auto w-full object-cover ${post.images.length > 1 ? "aspect-square" : "aspect-[4/3]"}`}
+                  />
+                </a>
+              </PostPhoto>
             ))}
           </div>
         )}

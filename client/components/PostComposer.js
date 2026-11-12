@@ -1,8 +1,8 @@
 "use client";
 
-// Write a new post (text + up to 4 photos).
+// Write a new post (text + up to 4 photos, each with an optional description).
 //   1. Each photo uploads as soon as you pick it: POST /api/uploads/image → url
-//   2. "Post" sends the text + those urls: POST /api/posts (or /api/groups/:slug/posts)
+//   2. "Post" sends the text, those urls and the descriptions: POST /api/posts (or /api/groups/:slug/posts)
 import { useRef, useState } from "react";
 import { api } from "@/lib/api";
 import { uploadImage } from "@/lib/upload";
@@ -12,12 +12,13 @@ import MentionField from "@/components/MentionField";
 
 const MAX = 2000;
 const MAX_IMAGES = 4;
+const MAX_DESCRIPTION = 200;
 
 export default function PostComposer({ onCreated, endpoint = "/api/posts", placeholder = "What's on your mind?" }) {
   const { user } = useAuth();
   const fileRef = useRef(null);
   const [content, setContent] = useState("");
-  const [images, setImages] = useState([]); // { id, preview, url?, error? }
+  const [images, setImages] = useState([]); // { id, preview, url?, error?, description }
   const [error, setError] = useState("");
   const [posting, setPosting] = useState(false);
 
@@ -33,11 +34,15 @@ export default function PostComposer({ onCreated, endpoint = "/api/posts", place
     for (const file of files) {
       const id = crypto.randomUUID();
       const preview = URL.createObjectURL(file); // instant local preview while it uploads
-      setImages((prev) => [...prev, { id, preview }]);
+      setImages((prev) => [...prev, { id, preview, description: "" }]);
       uploadImage(file, "posts")
         .then((url) => setImages((prev) => prev.map((i) => (i.id === id ? { ...i, url } : i))))
         .catch((err) => setImages((prev) => prev.map((i) => (i.id === id ? { ...i, error: err.message } : i))));
     }
+  }
+
+  function describe(id, description) {
+    setImages((prev) => prev.map((i) => (i.id === id ? { ...i, description } : i)));
   }
 
   function removeImage(id) {
@@ -54,16 +59,20 @@ export default function PostComposer({ onCreated, endpoint = "/api/posts", place
     setPosting(true);
     setError("");
     try {
-      const urls = images.filter((i) => i.url).map((i) => i.url);
+      const uploaded = images.filter((i) => i.url);
+      const urls = uploaded.map((i) => i.url);
+      const descriptions = uploaded.map((i) => i.description.trim());
       // The API requires text, so a photo-only post gets a small default caption.
       const text = content.trim() || "📷";
-      const { post } = await api(endpoint, { method: "POST", body: { content: text, ...(urls.length && { images: urls }) } });
+      const body = { content: text, ...(urls.length && { images: urls, imageDescriptions: descriptions }) };
+      const { post } = await api(endpoint, { method: "POST", body });
       setContent("");
       images.forEach((i) => URL.revokeObjectURL(i.preview));
       setImages([]);
       onCreated?.(post);
     } catch (err) {
-      setError(err.details?.content || err.details?.images || err.message);
+      const descriptionError = Object.entries(err.details ?? {}).find(([k]) => k.startsWith("imageDescriptions"))?.[1];
+      setError(err.details?.content || err.details?.images || descriptionError || err.message);
     } finally {
       setPosting(false);
     }
@@ -114,6 +123,29 @@ export default function PostComposer({ onCreated, endpoint = "/api/posts", place
               </li>
             ))}
           </ul>
+        )}
+
+        {/* One optional description per photo: what a screen reader says instead of "Photo 1 of 2". */}
+        {images.length > 0 && (
+          <div className="mt-3 space-y-2">
+            {images.map((img, i) => (
+              <div key={img.id} className="flex items-center gap-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img.preview} alt="" className="size-9 shrink-0 rounded object-cover" />
+                <label htmlFor={`describe-${img.id}`} className="sr-only">
+                  Description for photo {i + 1} (optional)
+                </label>
+                <input
+                  id={`describe-${img.id}`}
+                  value={img.description}
+                  onChange={(e) => describe(img.id, e.target.value)}
+                  maxLength={MAX_DESCRIPTION}
+                  placeholder={`Describe photo ${i + 1} for people who can't see it (optional)`}
+                  className="min-w-0 flex-1 rounded-lg border border-line bg-transparent px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-brand/40"
+                />
+              </div>
+            ))}
+          </div>
         )}
 
         {error && <p className="mt-1 text-sm text-danger">{error}</p>}

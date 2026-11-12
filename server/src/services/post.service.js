@@ -55,6 +55,7 @@ export async function hydratePosts(posts, viewerId) {
     id: p._id.toString(),
     content: p.content,
     images: p.images ?? [],
+    imageDescriptions: (p.images ?? []).map((_, i) => p.imageDescriptions?.[i] ?? ""),
     likeCount: p.likeCount,
     commentCount: p.commentCount,
     createdAt: p.createdAt,
@@ -85,8 +86,9 @@ async function findPostOrThrow(postId, viewerId) {
 
 // ---------- posts ----------
 
-export async function createPost(userId, { content, images = [] }, groupId = null) {
-  const post = await Post.create({ authorId: userId, content, images, groupId });
+export async function createPost(userId, { content, images = [], imageDescriptions = [] }, groupId = null) {
+  const descriptions = images.map((_, i) => imageDescriptions[i] ?? "");
+  const post = await Post.create({ authorId: userId, content, images, imageDescriptions: descriptions, groupId });
   await notifyMentions({ text: content, actorId: userId, post }).catch((err) =>
     console.error("Could not create mention notifications:", err.message)
   );
