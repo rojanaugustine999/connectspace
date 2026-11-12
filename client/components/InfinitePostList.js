@@ -90,14 +90,14 @@ export default function InfinitePostList({
       )}
 
       {status === "loading" && (
-        <div aria-busy="true" className="divide-y divide-black/10 dark:divide-white/10">
+        <div aria-busy="true" className="divide-y divide-line">
           {[0, 1, 2].map((i) => (
             <div key={i} className="flex gap-3 py-4 animate-pulse">
-              <div className="size-12 rounded-full bg-black/10 dark:bg-white/10" />
+              <div className="size-12 rounded-full bg-subtle-strong" />
               <div className="flex-1 space-y-2 py-1">
-                <div className="h-3 w-1/3 rounded bg-black/10 dark:bg-white/10" />
-                <div className="h-3 w-full rounded bg-black/10 dark:bg-white/10" />
-                <div className="h-3 w-2/3 rounded bg-black/10 dark:bg-white/10" />
+                <div className="h-3 w-1/3 rounded bg-subtle-strong" />
+                <div className="h-3 w-full rounded bg-subtle-strong" />
+                <div className="h-3 w-2/3 rounded bg-subtle-strong" />
               </div>
             </div>
           ))}
@@ -107,7 +107,7 @@ export default function InfinitePostList({
 
       {status !== "loading" && posts.length === 0 && status !== "error" && empty}
 
-      <div className="divide-y divide-black/10 dark:divide-white/10">
+      <div className="divide-y divide-line">
         {posts.map((post) => (
           <PostCard key={post.id} post={post} onDeleted={removePost} showGroup={showGroup} />
         ))}
@@ -122,7 +122,7 @@ export default function InfinitePostList({
           </button>
         )}
         {status === "error" && (
-          <p className="text-red-600 dark:text-red-400">
+          <p className="text-danger">
             Couldn&apos;t load posts.{" "}
             <button onClick={() => fetchPage(posts.length ? cursor : null)} className="underline">
               Try again

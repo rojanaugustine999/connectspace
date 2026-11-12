@@ -4,6 +4,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { SocketProvider } from "@/lib/socket-context";
 import NavBar from "@/components/NavBar";
 import WakingBanner from "@/components/WakingBanner";
+import { themeScript } from "@/lib/theme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,11 +36,15 @@ export const metadata = {
 };
 
 // Colours the browser UI (address bar on mobile) to match the brand.
-export const viewport = { themeColor: "#155DFC" };
+export const viewport = { themeColor: "#155DFC", colorScheme: "light dark" };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: themeScript may add data-theme to <html> before React loads.
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

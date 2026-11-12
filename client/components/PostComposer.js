@@ -69,7 +69,7 @@ export default function PostComposer({ onCreated, endpoint = "/api/posts", place
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-3 rounded-xl border border-black/10 dark:border-white/15 p-4">
+    <form onSubmit={handleSubmit} className="flex gap-3 rounded-xl border border-line p-4">
       <Avatar user={user} />
       <div className="min-w-0 flex-1">
         <label htmlFor="new-post" className="sr-only">
@@ -90,7 +90,7 @@ export default function PostComposer({ onCreated, endpoint = "/api/posts", place
         {images.length > 0 && (
           <ul className="mt-2 grid grid-cols-4 gap-2">
             {images.map((img) => (
-              <li key={img.id} className="relative aspect-square overflow-hidden rounded-lg bg-black/5 dark:bg-white/10">
+              <li key={img.id} className="relative aspect-square overflow-hidden rounded-lg bg-subtle">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={img.preview} alt="" className={`size-full object-cover ${img.url ? "" : "opacity-50"}`} />
                 {!img.url && !img.error && (
@@ -114,7 +114,7 @@ export default function PostComposer({ onCreated, endpoint = "/api/posts", place
           </ul>
         )}
 
-        {error && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-sm text-danger">{error}</p>}
         <div className="mt-2 flex items-center justify-end gap-3">
           <input
             ref={fileRef}
@@ -128,17 +128,17 @@ export default function PostComposer({ onCreated, endpoint = "/api/posts", place
             type="button"
             onClick={() => fileRef.current.click()}
             disabled={images.length >= MAX_IMAGES}
-            className="mr-auto rounded-full px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-500/10 disabled:opacity-40 dark:text-blue-400"
+            className="mr-auto rounded-full px-3 py-1.5 text-sm font-medium text-link hover:bg-brand/10 disabled:opacity-40"
           >
             📷 Photo{images.length > 0 && ` (${images.length}/${MAX_IMAGES})`}
           </button>
           {content.length > MAX - 200 && (
-            <span className={`text-sm ${remaining < 0 ? "text-red-600" : "opacity-60"}`}>{remaining}</span>
+            <span className={`text-sm ${remaining < 0 ? "text-danger" : "opacity-60"}`}>{remaining}</span>
           )}
           <button
             type="submit"
             disabled={!canPost}
-            className="rounded-full bg-blue-600 px-5 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-40"
+            className="rounded-full bg-brand px-5 py-2 font-medium text-white hover:bg-brand-hover disabled:opacity-40"
           >
             {posting ? "Posting…" : uploading ? "Uploading…" : "Post"}
           </button>

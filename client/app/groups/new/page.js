@@ -60,17 +60,17 @@ export default function NewGroupPage() {
             maxLength={300}
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="w-full rounded-lg border border-black/15 dark:border-white/20 bg-transparent px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/40"
+            className="w-full rounded-lg border border-line-strong bg-transparent px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand/40"
           />
-          {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
+          {errors.description && <p className="mt-1 text-sm text-danger">{errors.description}</p>}
         </div>
         <PrivacyChoice value={form.isPrivate} onChange={(isPrivate) => setForm({ ...form, isPrivate })} />
 
-        {formError && <p className="text-sm text-red-600 dark:text-red-400">{formError}</p>}
+        {formError && <p className="text-sm text-danger">{formError}</p>}
         <button
           type="submit"
           disabled={saving}
-          className="w-full rounded-lg bg-blue-600 py-2.5 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          className="w-full rounded-lg bg-brand py-2.5 font-medium text-white hover:bg-brand-hover disabled:opacity-50"
         >
           {saving ? "Creating…" : "Create group"}
         </button>

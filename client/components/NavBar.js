@@ -67,7 +67,7 @@ function NavLink({ href, children, active }) {
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`relative rounded-lg px-3 py-2 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/10 ${
+      className={`relative rounded-lg px-3 py-2 text-sm font-medium hover:bg-subtle ${
         active ? "" : "opacity-70"
       }`}
     >
@@ -121,7 +121,7 @@ export default function NavBar() {
   }, [refreshNotifications]);
 
   return (
-    <header className="sticky top-0 z-10 h-14 border-b border-black/10 dark:border-white/10 bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-10 h-14 border-b border-line bg-background/90 backdrop-blur">
       <nav className="mx-auto flex h-full max-w-3xl items-center gap-1 px-4">
         <Link href="/" aria-label="ConnectSpace home" className="mr-auto rounded-lg">
           {/* On phones only the icon shows, to leave room for the nav links. */}

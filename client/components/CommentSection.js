@@ -48,12 +48,12 @@ function CommentForm({ postId, parentId, onAdded, autoFocus, placeholder, onCanc
           placeholder={placeholder}
           autoFocus={autoFocus}
           maxLength={1000}
-          className="min-w-0 flex-1 rounded-full border border-black/15 dark:border-white/20 bg-transparent px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500/40"
+          className="min-w-0 flex-1 rounded-full border border-line-strong bg-transparent px-4 py-2 outline-none focus:ring-2 focus:ring-brand/40"
         />
         <button
           type="submit"
           disabled={!content.trim() || sending}
-          className="rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-40"
+          className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-hover disabled:opacity-40"
         >
           {sending ? "…" : parentId ? "Reply" : "Comment"}
         </button>
@@ -63,7 +63,7 @@ function CommentForm({ postId, parentId, onAdded, autoFocus, placeholder, onCanc
           </button>
         )}
       </div>
-      {error && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="mt-1 text-sm text-danger">{error}</p>}
     </form>
   );
 }
@@ -77,7 +77,7 @@ function Comment({ comment, postId, isReply, canReply, onReplyAdded, onDelete })
         <Avatar user={comment.author} size="sm" />
       </Link>
       <div className="min-w-0 flex-1">
-        <div className="rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2">
+        <div className="rounded-2xl bg-subtle px-3 py-2">
           <Link href={`/u/${comment.author.username}`} className="text-sm font-semibold hover:underline">
             {comment.author.name}
           </Link>
@@ -95,7 +95,7 @@ function Comment({ comment, postId, isReply, canReply, onReplyAdded, onDelete })
           {comment.canDelete && (
             <button
               onClick={() => onDelete(comment)}
-              className="font-semibold opacity-70 hover:text-red-600 hover:opacity-100"
+              className="font-semibold opacity-70 hover:text-danger hover:opacity-100"
             >
               Delete
             </button>
@@ -168,7 +168,7 @@ export default function CommentSection({ postId, onCountChange, viewerKey }) {
   }
 
   return (
-    <section aria-label="Comments" className="mt-2 border-t border-black/10 dark:border-white/10 pt-6">
+    <section aria-label="Comments" className="mt-2 border-t border-line pt-6">
       {user ? (
         <div className="flex gap-3">
           <Avatar user={user} size="sm" />
@@ -183,7 +183,7 @@ export default function CommentSection({ postId, onCountChange, viewerKey }) {
         </p>
       )}
 
-      {error && <p className="mt-6 text-red-600">{error}</p>}
+      {error && <p className="mt-6 text-danger">{error}</p>}
       {!comments && !error && <p className="mt-6 opacity-60">Loading comments…</p>}
       {comments?.length === 0 && <p className="mt-6 text-center text-sm opacity-60">No comments yet. Be the first!</p>}
 

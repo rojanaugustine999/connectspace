@@ -204,7 +204,7 @@ export default function ChatWindow({ conversationId }) {
       </div>
     );
   }
-  if (status === "error") return <p className="m-auto text-red-600">Could not load this chat.</p>;
+  if (status === "error") return <p className="m-auto text-danger">Could not load this chat.</p>;
 
   const other = conversation.otherUser;
   const lastMine = [...messages].reverse().find((m) => m.senderId === user.id && !m.pending && !m.failed);
@@ -212,7 +212,7 @@ export default function ChatWindow({ conversationId }) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <header className="flex items-center gap-3 border-b border-black/10 dark:border-white/10 px-3 py-2">
+      <header className="flex items-center gap-3 border-b border-line px-3 py-2">
         <Link href="/messages" className="rounded-lg px-2 py-1 text-lg md:hidden" aria-label="Back to messages">
           ←
         </Link>
@@ -224,7 +224,7 @@ export default function ChatWindow({ conversationId }) {
           </div>
         </Link>
         {!connected && (
-          <span className="ml-auto rounded-full bg-amber-500/15 px-2 py-0.5 text-xs text-amber-700 dark:text-amber-400">
+          <span className="ml-auto rounded-full bg-warning/15 px-2 py-0.5 text-xs text-warning">
             Reconnecting…
           </span>
         )}
@@ -254,7 +254,7 @@ export default function ChatWindow({ conversationId }) {
               <li key={m.id} className={`flex flex-col ${mine ? "items-end" : "items-start"}`}>
                 <div
                   className={`max-w-[80%] whitespace-pre-line break-words rounded-2xl px-3.5 py-2 ${
-                    mine ? "rounded-br-sm bg-blue-600 text-white" : "rounded-bl-sm bg-black/5 dark:bg-white/10"
+                    mine ? "rounded-br-sm bg-brand text-white" : "rounded-bl-sm bg-subtle"
                   } ${m.pending ? "opacity-60" : ""} ${m.failed ? "bg-red-600" : ""}`}
                 >
                   {m.text}
@@ -264,7 +264,7 @@ export default function ChatWindow({ conversationId }) {
                   {m.id === lastMine?.id && seen && " · Seen"}
                 </span>
                 {m.failed && (
-                  <p className="px-1 text-xs text-red-600 dark:text-red-400">
+                  <p className="px-1 text-xs text-danger">
                     Not sent: {m.failed}.{" "}
                     <button onClick={() => send(m.text, m.id)} className="font-semibold underline">
                       Retry
@@ -288,7 +288,7 @@ export default function ChatWindow({ conversationId }) {
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex items-end gap-2 border-t border-black/10 dark:border-white/10 p-3">
+      <form onSubmit={handleSubmit} className="flex items-end gap-2 border-t border-line p-3">
         <label htmlFor="message" className="sr-only">
           Message {other.name}
         </label>
@@ -302,12 +302,12 @@ export default function ChatWindow({ conversationId }) {
           }}
           maxLength={2000}
           placeholder={`Message ${other.name}`}
-          className="max-h-32 min-w-0 flex-1 resize-none rounded-2xl border border-black/15 dark:border-white/20 bg-transparent px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500/40"
+          className="max-h-32 min-w-0 flex-1 resize-none rounded-2xl border border-line-strong bg-transparent px-4 py-2 outline-none focus:ring-2 focus:ring-brand/40"
         />
         <button
           type="submit"
           disabled={!text.trim()}
-          className="rounded-full bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-40"
+          className="rounded-full bg-brand px-4 py-2 font-medium text-white hover:bg-brand-hover disabled:opacity-40"
         >
           Send
         </button>

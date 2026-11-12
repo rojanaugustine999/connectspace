@@ -1,5 +1,5 @@
 // Shows the user's photo, or their first initial on a colour picked from their username.
-const COLORS = ["bg-blue-600", "bg-emerald-600", "bg-violet-600", "bg-rose-600", "bg-amber-600", "bg-cyan-600"];
+const COLORS = ["bg-brand", "bg-emerald-600", "bg-violet-600", "bg-rose-600", "bg-amber-600", "bg-cyan-600"];
 
 const SIZES = {
   sm: "size-9 text-sm",
@@ -13,7 +13,7 @@ export default function Avatar({ user, size = "md" }) {
   if (user.avatarUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={user.avatarUrl} alt="" className={`${sizeClass} shrink-0 rounded-full object-cover bg-black/10`} />
+      <img src={user.avatarUrl} alt="" className={`${sizeClass} shrink-0 rounded-full object-cover bg-subtle-strong`} />
     );
   }
 

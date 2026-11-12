@@ -1,22 +1,110 @@
 @import "tailwindcss";
 
+/*
+  Design tokens. Components use these names (bg-surface, border-line, text-danger…),
+  never raw colors, so light and dark are just two sets of values.
+  The same names and values live in docs/design-tokens.json for Figma variables.
+
+  Theme choice: <html data-theme="light|dark"> when the visitor picks one in the
+  account menu; no attribute = follow the device setting.
+*/
 :root {
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #171717;
+  --surface: #ffffff; /* menus and raised panels */
+  --subtle: rgb(0 0 0 / 0.05); /* hover, chips, other person's chat bubble */
+  --subtle-strong: rgb(0 0 0 / 0.1);
+  --line: rgb(0 0 0 / 0.1); /* card borders, dividers */
+  --line-strong: rgb(0 0 0 / 0.15);
+  --field: rgb(0 0 0 / 0.2); /* input borders */
+  --brand: #155dfc;
+  --brand-hover: #1447e6;
+  --link: #155dfc;
+  --danger: #e7000b;
+  --success: #00a63e;
+  --like: #ec003f;
+  --warning: #bb4d00;
+  --warning-bg: #fffbeb;
+  --warning-fg: #7b3306;
+}
+
+/* Dark values: used when the device is dark (unless the visitor chose light), or when they chose dark. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --background: #0b0d12;
+    --foreground: #e8eaed;
+    --surface: #161a22;
+    --subtle: rgb(255 255 255 / 0.08);
+    --subtle-strong: rgb(255 255 255 / 0.12);
+    --line: rgb(255 255 255 / 0.1);
+    --line-strong: rgb(255 255 255 / 0.18);
+    --field: rgb(255 255 255 / 0.25);
+    --brand: #155dfc;
+    --brand-hover: #2b6dff;
+    --link: #74b0ff;
+    --danger: #ff6467;
+    --success: #05df72;
+    --like: #ff637e;
+    --warning: #ffb900;
+    --warning-bg: rgb(70 25 1 / 0.6);
+    --warning-fg: #fee685;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0b0d12;
+  --foreground: #e8eaed;
+  --surface: #161a22;
+  --subtle: rgb(255 255 255 / 0.08);
+  --subtle-strong: rgb(255 255 255 / 0.12);
+  --line: rgb(255 255 255 / 0.1);
+  --line-strong: rgb(255 255 255 / 0.18);
+  --field: rgb(255 255 255 / 0.25);
+  --brand: #155dfc;
+  --brand-hover: #2b6dff;
+  --link: #74b0ff;
+  --danger: #ff6467;
+  --success: #05df72;
+  --like: #ff637e;
+  --warning: #ffb900;
+  --warning-bg: rgb(70 25 1 / 0.6);
+  --warning-fg: #fee685;
+}
+
+/* Tailwind's dark: prefix follows the same rule as the tokens above. */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-subtle: var(--subtle);
+  --color-subtle-strong: var(--subtle-strong);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-field: var(--field);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-link: var(--link);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-like: var(--like);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-fg: var(--warning-fg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

@@ -28,7 +28,7 @@ export default function MessageButton({ username }) {
     <button
       onClick={open}
       disabled={busy}
-      className="rounded-full border border-black/20 dark:border-white/25 px-5 py-2 font-medium hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-50"
+      className="rounded-full border border-field px-5 py-2 font-medium hover:bg-subtle disabled:opacity-50"
     >
       {busy ? "Opening…" : "Message"}
     </button>

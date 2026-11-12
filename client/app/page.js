@@ -10,12 +10,12 @@ import InfinitePostList from "@/components/InfinitePostList";
 
 function EmptyFeed() {
   return (
-    <div className="rounded-xl border border-dashed border-black/15 dark:border-white/20 p-8 text-center">
+    <div className="rounded-xl border border-dashed border-line-strong p-8 text-center">
       <h2 className="font-semibold">Your feed is empty</h2>
       <p className="mt-1 text-sm opacity-70">Follow people to see their posts here, or write your first post above.</p>
       <Link
         href="/people"
-        className="mt-4 inline-block rounded-full bg-blue-600 px-5 py-2 font-medium text-white hover:bg-blue-700"
+        className="mt-4 inline-block rounded-full bg-brand px-5 py-2 font-medium text-white hover:bg-brand-hover"
       >
         Find people to follow
       </Link>
@@ -33,7 +33,7 @@ export default function Home() {
   if (!user) {
     return (
       <main className="mx-auto max-w-3xl px-4 py-6 font-sans">
-        <section className="rounded-2xl bg-blue-600 px-6 py-8 text-white">
+        <section className="rounded-2xl bg-brand px-6 py-8 text-white">
           <h1 className="text-3xl font-bold">Welcome to ConnectSpace</h1>
           <p className="mt-2 max-w-md opacity-90">Follow people, share posts and join the conversation.</p>
           <div className="mt-5 flex flex-wrap gap-3">

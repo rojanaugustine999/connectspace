@@ -37,20 +37,20 @@ function JoinButton({ group, onChange }) {
   const base = "rounded-full px-5 py-2 font-medium disabled:opacity-50";
   if (group.myStatus === "ACTIVE") {
     return (
-      <button onClick={() => act("DELETE")} disabled={busy} className={`${base} border border-black/20 dark:border-white/25 hover:border-red-500 hover:text-red-600`}>
+      <button onClick={() => act("DELETE")} disabled={busy} className={`${base} border border-field hover:border-danger hover:text-danger`}>
         Leave group
       </button>
     );
   }
   if (group.myStatus === "PENDING") {
     return (
-      <button onClick={() => act("DELETE")} disabled={busy} className={`${base} border border-black/20 dark:border-white/25`}>
+      <button onClick={() => act("DELETE")} disabled={busy} className={`${base} border border-field`}>
         Cancel request
       </button>
     );
   }
   return (
-    <button onClick={() => act("POST")} disabled={busy} className={`${base} bg-blue-600 text-white hover:bg-blue-700`}>
+    <button onClick={() => act("POST")} disabled={busy} className={`${base} bg-brand text-white hover:bg-brand-hover`}>
       {group.isPrivate ? "Request to join" : "Join group"}
     </button>
   );
@@ -89,7 +89,7 @@ export default function GroupLayout({ children }) {
       </main>
     );
   }
-  if (status === "error") return <p className="p-8 text-center text-red-600">Could not load this group.</p>;
+  if (status === "error") return <p className="p-8 text-center text-danger">Could not load this group.</p>;
 
   const isAdmin = group.myRole === "OWNER" || group.myRole === "ADMIN";
   const tabs = [
@@ -122,7 +122,7 @@ export default function GroupLayout({ children }) {
           <JoinButton group={group} onChange={reload} />
         </div>
 
-        <nav className="mt-6 flex overflow-x-auto border-b border-black/10 dark:border-white/10" aria-label="Group sections">
+        <nav className="mt-6 flex overflow-x-auto border-b border-line" aria-label="Group sections">
           {tabs.map((t) => {
             const active = pathname === t.href;
             return (

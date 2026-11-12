@@ -51,7 +51,7 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
         </header>
 
         {post.group && showGroup && (
-          <Link href={`/groups/${post.group.slug}`} className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400">
+          <Link href={`/groups/${post.group.slug}`} className="text-xs font-medium text-link hover:underline">
             in {post.group.name}
           </Link>
         )}
@@ -61,7 +61,7 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
         {post.images?.length > 0 && (
           <div className={`mt-2 grid gap-1 overflow-hidden rounded-xl ${post.images.length > 1 ? "grid-cols-2" : ""}`}>
             {post.images.map((src, i) => (
-              <a key={src} href={src} target="_blank" rel="noreferrer" className="block bg-black/5 dark:bg-white/10">
+              <a key={src} href={src} target="_blank" rel="noreferrer" className="block bg-subtle">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
@@ -79,7 +79,7 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
           <Link
             href={postUrl}
             aria-label={`Comments, ${comments}`}
-            className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm opacity-70 hover:bg-blue-500/10 hover:opacity-100"
+            className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm opacity-70 hover:bg-brand/10 hover:opacity-100"
           >
             <svg viewBox="0 0 24 24" className="size-5" aria-hidden fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" strokeLinejoin="round" />
@@ -90,7 +90,7 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className="ml-auto rounded-full px-3 py-1.5 text-sm opacity-60 hover:bg-red-500/10 hover:text-red-600 hover:opacity-100"
+              className="ml-auto rounded-full px-3 py-1.5 text-sm opacity-60 hover:bg-danger/10 hover:text-danger hover:opacity-100"
             >
               Delete
             </button>

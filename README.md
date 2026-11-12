@@ -35,6 +35,7 @@
 - **Feed:** posts from people you follow, with **infinite scroll**, photos (up to 4), likes and threaded comments
 - **Real time:** one-to-one chat with **typing indicators** and **read receipts**, plus **live notifications** and unread badges (Socket.io)
 - **Groups:** public or private, owner/admin/member roles, join requests, group-only posts
+- **Light and dark themes:** built on [design tokens](docs/design-tokens.json) shared with Figma; follows the device setting, or pick one in the account menu
 - **Production details:** per-visitor rate limiting, private content hidden as 404, image type checks, graceful shutdown
 - **Tested:** 41 automated API tests (real HTTP and Socket.io clients against real databases) run on every push in [GitHub Actions](.github/workflows/ci.yml)
 

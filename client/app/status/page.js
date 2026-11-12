@@ -8,9 +8,9 @@ import { api } from "@/lib/api";
 function StatusRow({ label, value }) {
   const ok = value === "ok" || value === "connected";
   return (
-    <li className="flex items-center justify-between gap-4 rounded-lg border border-black/10 dark:border-white/15 px-4 py-3">
+    <li className="flex items-center justify-between gap-4 rounded-lg border border-line px-4 py-3">
       <span className="font-medium">{label}</span>
-      <span className={`text-sm text-right ${ok ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
+      <span className={`text-sm text-right ${ok ? "text-success" : "text-danger"}`}>
         {ok ? "● " : "○ "}
         {value}
       </span>
@@ -47,7 +47,7 @@ export default function StatusPage() {
 
       <ul className="mt-6 space-y-3">
         {loading && <li className="text-sm opacity-70">Checking…</li>}
-        {error && <li className="text-sm text-red-600 dark:text-red-400">{error}</li>}
+        {error && <li className="text-sm text-danger">{error}</li>}
         {health && (
           <>
             <StatusRow label="Express API" value={health.status} />

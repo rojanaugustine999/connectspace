@@ -12,7 +12,7 @@ export default function GroupPostsPage() {
 
   if (!group.canView) {
     return (
-      <div className="rounded-xl border border-dashed border-black/15 dark:border-white/20 p-8 text-center">
+      <div className="rounded-xl border border-dashed border-line-strong p-8 text-center">
         <p className="text-3xl" aria-hidden>
           🔒
         </p>

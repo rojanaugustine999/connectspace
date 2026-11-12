@@ -15,9 +15,9 @@ export default function MessagesLayout({ children }) {
   if (loading || !user) return <p className="p-8 text-center opacity-60">Loading…</p>;
 
   return (
-    <div className="mx-auto flex h-[calc(100dvh-3.5rem)] max-w-5xl font-sans md:border-x md:border-black/10 md:dark:border-white/10">
+    <div className="mx-auto flex h-[calc(100dvh-3.5rem)] max-w-5xl font-sans md:border-x md:border-line">
       <aside
-        className={`w-full shrink-0 overflow-y-auto border-black/10 dark:border-white/10 md:block md:w-80 md:border-r ${
+        className={`w-full shrink-0 overflow-y-auto border-line md:block md:w-80 md:border-r ${
           inChat ? "hidden" : "block"
         }`}
       >

@@ -37,7 +37,7 @@ export default function GroupsPage() {
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Groups</h1>
         {user && (
-          <Link href="/groups/new" className="rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+          <Link href="/groups/new" className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-hover">
             + Create group
           </Link>
         )}
@@ -46,7 +46,7 @@ export default function GroupsPage() {
       {user && mine?.length > 0 && (
         <section className="mt-6">
           <h2 className="text-sm font-semibold uppercase tracking-wide opacity-60">Your groups</h2>
-          <ul className="mt-2 divide-y divide-black/10 dark:divide-white/10">
+          <ul className="mt-2 divide-y divide-line">
             {mine.map((g) => (
               <GroupCard key={g.id} group={g} />
             ))}
@@ -65,7 +65,7 @@ export default function GroupsPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search groups"
-          className="mt-2 w-full rounded-lg border border-black/15 dark:border-white/20 bg-transparent px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/40"
+          className="mt-2 w-full rounded-lg border border-line-strong bg-transparent px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand/40"
         />
         {!groups && <p className="mt-6 opacity-60">Loading…</p>}
         {groups?.length === 0 && (
@@ -73,7 +73,7 @@ export default function GroupsPage() {
             {query ? `No groups match “${query}”.` : "No groups yet. Create the first one!"}
           </p>
         )}
-        <ul className="mt-2 divide-y divide-black/10 dark:divide-white/10">
+        <ul className="mt-2 divide-y divide-line">
           {groups?.map((g) => (
             <GroupCard key={g.id} group={g} />
           ))}

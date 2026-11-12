@@ -21,7 +21,7 @@ export default function Logo({ size = 28, wordmark = "always", className = "" })
     <span className={`inline-flex items-center gap-2 ${className}`}>
       <LogoMark size={size} />
       <span className={`${textClass} text-lg font-bold tracking-tight`}>
-        Connect<span className="text-blue-600 dark:text-blue-400">Space</span>
+        Connect<span className="text-link">Space</span>
       </span>
     </span>
   );

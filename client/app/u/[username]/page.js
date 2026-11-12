@@ -42,7 +42,7 @@ export default function ProfilePage() {
       </main>
     );
   }
-  if (status === "error") return <p className="p-8 text-center text-red-600">Could not load this profile.</p>;
+  if (status === "error") return <p className="p-8 text-center text-danger">Could not load this profile.</p>;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 font-sans">
@@ -57,7 +57,7 @@ export default function ProfilePage() {
             {profile.isMe ? (
               <Link
                 href="/settings/profile"
-                className="rounded-full border border-black/20 dark:border-white/25 px-5 py-2 font-medium hover:bg-black/5 dark:hover:bg-white/10"
+                className="rounded-full border border-field px-5 py-2 font-medium hover:bg-subtle"
               >
                 Edit profile
               </Link>

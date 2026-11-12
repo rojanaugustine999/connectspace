@@ -55,6 +55,9 @@ Messages switch from two panes (desktop) to list → chat (phone). The nav colla
 ### 5. One visual language
 One accent blue, one icon style (2px line icons), one avatar component that shows the person's photo or a colour taken from their username, so the same person always gets the same colour.
 
+### 6. Colours as design tokens, so dark mode is free
+Components never use raw colours. They use named tokens like `surface`, `line`, `link` and `danger`, and light and dark are two sets of values for the same names. The site follows the device setting, and the account menu lets people choose Auto, Light or Dark (saved on their device and applied before the page paints, so there's no white flash). The same tokens are exported to [design-tokens.json](design-tokens.json), ready to import as Figma variables with a light and a dark mode, so design and code share one source of truth.
+
 ## The brand
 
 <img src="brand/logo-mark.svg" width="56" alt="ConnectSpace logo mark"> **Two interlocking rings: two people, one shared space.**
@@ -100,7 +103,7 @@ The biggest lesson: **a vague error message is a design problem.** Half of these
 
 1. Usability-test with five people, focusing on group privacy, which is the most complex flow
 2. Separate development and live databases
-3. Dark mode polish and a design token file shared by Figma and code
+3. Spacing and type tokens, to finish the design system started with colour
 
 ## How I built it
 

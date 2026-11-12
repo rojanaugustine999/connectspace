@@ -37,8 +37,8 @@ export default function LikeButton({ postId, initialLiked, initialCount }) {
       onClick={toggle}
       aria-pressed={liked}
       aria-label={`Like, ${count} ${count === 1 ? "like" : "likes"}`}
-      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm hover:bg-rose-500/10 ${
-        liked ? "text-rose-600 dark:text-rose-400" : "opacity-70 hover:opacity-100"
+      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm hover:bg-like/10 ${
+        liked ? "text-like" : "opacity-70 hover:opacity-100"
       }`}
     >
       <svg viewBox="0 0 24 24" className="size-5" aria-hidden fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">

@@ -20,8 +20,8 @@ function SmallButton({ children, danger, ...props }) {
       {...props}
       className={`rounded-full border px-3 py-1 text-sm font-medium disabled:opacity-50 ${
         danger
-          ? "border-red-500/40 text-red-600 hover:bg-red-500/10 dark:text-red-400"
-          : "border-black/20 dark:border-white/25 hover:bg-black/5 dark:hover:bg-white/10"
+          ? "border-danger/40 text-danger hover:bg-danger/10"
+          : "border-field hover:bg-subtle"
       }`}
     >
       {children}
@@ -38,7 +38,7 @@ function MemberRow({ member, actions }) {
           <p className="truncate font-semibold group-hover:underline">
             {member.name}
             {ROLE_LABEL[member.role] && member.status === "ACTIVE" && (
-              <span className="ml-2 rounded-full bg-blue-600/10 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">
+              <span className="ml-2 rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-link">
                 {ROLE_LABEL[member.role]}
               </span>
             )}
@@ -126,12 +126,12 @@ export default function GroupMembersPage() {
 
   return (
     <div>
-      {error && <p className="mb-3 text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="mb-3 text-sm text-danger">{error}</p>}
 
       {isAdmin && pending.length > 0 && (
-        <section className="mb-6 rounded-xl border border-amber-500/40 bg-amber-500/5 px-4 py-2">
+        <section className="mb-6 rounded-xl border border-warning/40 bg-warning/5 px-4 py-2">
           <h2 className="pt-2 font-semibold">Join requests ({pending.length})</h2>
-          <ul className="divide-y divide-black/10 dark:divide-white/10">
+          <ul className="divide-y divide-line">
             {pending.map((m) => (
               <MemberRow
                 key={m.id}
@@ -151,7 +151,7 @@ export default function GroupMembersPage() {
       )}
 
       <h2 className="text-sm font-semibold uppercase tracking-wide opacity-60">{members.length} members</h2>
-      <ul className="divide-y divide-black/10 dark:divide-white/10">
+      <ul className="divide-y divide-line">
         {members.map((m) => (
           <MemberRow key={m.id} member={m} actions={memberActions(m)} />
         ))}

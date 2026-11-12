@@ -82,7 +82,7 @@ export default function RegisterPage() {
           error={errors.password}
           hint="At least 8 characters"
         />
-        {formError && <p className="text-sm text-red-600 dark:text-red-400">{formError}</p>}
+        {formError && <p className="text-sm text-danger">{formError}</p>}
         <button
           type="submit"
           disabled={submitting}

@@ -12,8 +12,8 @@ export default function PrivacyChoice({ value, onChange }) {
         {OPTIONS.map((o) => (
           <label
             key={String(o.value)}
-            className={`cursor-pointer rounded-lg border p-3 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-blue-500 ${
-              value === o.value ? "border-blue-600 ring-2 ring-blue-500/30" : "border-black/15 dark:border-white/20"
+            className={`cursor-pointer rounded-lg border p-3 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand ${
+              value === o.value ? "border-brand ring-2 ring-brand/30" : "border-line-strong"
             }`}
           >
             <input

@@ -40,7 +40,7 @@ export default function PostPage() {
       </main>
     );
   }
-  if (status === "error") return <p className="p-8 text-center text-red-600">Could not load this post.</p>;
+  if (status === "error") return <p className="p-8 text-center text-danger">Could not load this post.</p>;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-4 font-sans">

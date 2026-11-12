@@ -51,7 +51,7 @@ export default function ConversationList() {
     setConversations((prev) => prev?.map((c) => (c.id === conversationId ? { ...c, unreadCount: 0 } : c)));
   });
 
-  if (error) return <p className="p-4 text-red-600">{error}</p>;
+  if (error) return <p className="p-4 text-danger">{error}</p>;
   if (!conversations) return <p className="p-4 opacity-60">Loading chats…</p>;
 
   if (conversations.length === 0) {
@@ -79,8 +79,8 @@ export default function ConversationList() {
             <Link
               href={`/messages/${c.id}`}
               aria-current={active ? "page" : undefined}
-              className={`flex items-center gap-3 px-4 py-3 hover:bg-black/5 dark:hover:bg-white/10 ${
-                active ? "bg-black/5 dark:bg-white/10" : ""
+              className={`flex items-center gap-3 px-4 py-3 hover:bg-subtle ${
+                active ? "bg-subtle" : ""
               }`}
             >
               <Avatar user={c.otherUser} />
@@ -94,7 +94,7 @@ export default function ConversationList() {
                     {c.lastMessage ? `${mine ? "You: " : ""}${c.lastMessage.text}` : "Say hi 👋"}
                   </p>
                   {c.unreadCount > 0 && (
-                    <span className="shrink-0 rounded-full bg-blue-600 px-2 text-xs leading-5 text-white">
+                    <span className="shrink-0 rounded-full bg-brand px-2 text-xs leading-5 text-white">
                       {c.unreadCount}
                       <span className="sr-only"> unread</span>
                     </span>

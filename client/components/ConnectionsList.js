@@ -35,7 +35,7 @@ export default function ConnectionsList({ type }) {
         ← @{username}
       </Link>
 
-      <div className="mt-4 flex border-b border-black/10 dark:border-white/10">
+      <div className="mt-4 flex border-b border-line">
         <Link href={`/u/${username}/followers`} className={tabClass(type === "followers")}>
           Followers
         </Link>
@@ -44,7 +44,7 @@ export default function ConnectionsList({ type }) {
         </Link>
       </div>
 
-      {error && <p className="mt-6 text-red-600">{error}</p>}
+      {error && <p className="mt-6 text-danger">{error}</p>}
       {!data && !error && <p className="mt-6 opacity-60">Loading…</p>}
 
       {data && data.users.length === 0 && (
@@ -55,7 +55,7 @@ export default function ConnectionsList({ type }) {
 
       {data && data.users.length > 0 && (
         <>
-          <ul className="divide-y divide-black/10 dark:divide-white/10">
+          <ul className="divide-y divide-line">
             {data.users.map((u) => (
               <UserCard key={u.id} user={u} />
             ))}

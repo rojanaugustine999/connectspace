@@ -1,0 +1,192 @@
+{
+  "$description": "ConnectSpace color tokens (W3C design tokens format). Same names as client/app/globals.css; import into Figma variables with one collection and two modes.",
+  "color": {
+    "background": {
+      "$type": "color",
+      "$description": "Page background",
+      "$value": "#ffffff",
+      "$extensions": {
+        "modes": {
+          "light": "#ffffff",
+          "dark": "#0b0d12"
+        }
+      }
+    },
+    "foreground": {
+      "$type": "color",
+      "$description": "Main text",
+      "$value": "#171717",
+      "$extensions": {
+        "modes": {
+          "light": "#171717",
+          "dark": "#e8eaed"
+        }
+      }
+    },
+    "surface": {
+      "$type": "color",
+      "$description": "Menus and raised panels",
+      "$value": "#ffffff",
+      "$extensions": {
+        "modes": {
+          "light": "#ffffff",
+          "dark": "#161a22"
+        }
+      }
+    },
+    "subtle": {
+      "$type": "color",
+      "$description": "Hover, chips, received chat bubble",
+      "$value": "rgb(0 0 0 / 0.05)",
+      "$extensions": {
+        "modes": {
+          "light": "rgb(0 0 0 / 0.05)",
+          "dark": "rgb(255 255 255 / 0.08)"
+        }
+      }
+    },
+    "subtle-strong": {
+      "$type": "color",
+      "$description": "Stronger fill, image placeholders",
+      "$value": "rgb(0 0 0 / 0.1)",
+      "$extensions": {
+        "modes": {
+          "light": "rgb(0 0 0 / 0.1)",
+          "dark": "rgb(255 255 255 / 0.12)"
+        }
+      }
+    },
+    "line": {
+      "$type": "color",
+      "$description": "Card borders and dividers",
+      "$value": "rgb(0 0 0 / 0.1)",
+      "$extensions": {
+        "modes": {
+          "light": "rgb(0 0 0 / 0.1)",
+          "dark": "rgb(255 255 255 / 0.1)"
+        }
+      }
+    },
+    "line-strong": {
+      "$type": "color",
+      "$description": "Stronger borders",
+      "$value": "rgb(0 0 0 / 0.15)",
+      "$extensions": {
+        "modes": {
+          "light": "rgb(0 0 0 / 0.15)",
+          "dark": "rgb(255 255 255 / 0.18)"
+        }
+      }
+    },
+    "field": {
+      "$type": "color",
+      "$description": "Input borders",
+      "$value": "rgb(0 0 0 / 0.2)",
+      "$extensions": {
+        "modes": {
+          "light": "rgb(0 0 0 / 0.2)",
+          "dark": "rgb(255 255 255 / 0.25)"
+        }
+      }
+    },
+    "brand": {
+      "$type": "color",
+      "$description": "Primary buttons, sent chat bubble",
+      "$value": "#155dfc",
+      "$extensions": {
+        "modes": {
+          "light": "#155dfc",
+          "dark": "#155dfc"
+        }
+      }
+    },
+    "brand-hover": {
+      "$type": "color",
+      "$description": "Primary button hover",
+      "$value": "#1447e6",
+      "$extensions": {
+        "modes": {
+          "light": "#1447e6",
+          "dark": "#2b6dff"
+        }
+      }
+    },
+    "link": {
+      "$type": "color",
+      "$description": "Links and brand-colored text",
+      "$value": "#155dfc",
+      "$extensions": {
+        "modes": {
+          "light": "#155dfc",
+          "dark": "#74b0ff"
+        }
+      }
+    },
+    "danger": {
+      "$type": "color",
+      "$description": "Errors and destructive actions",
+      "$value": "#e7000b",
+      "$extensions": {
+        "modes": {
+          "light": "#e7000b",
+          "dark": "#ff6467"
+        }
+      }
+    },
+    "success": {
+      "$type": "color",
+      "$description": "Connected / success text",
+      "$value": "#00a63e",
+      "$extensions": {
+        "modes": {
+          "light": "#00a63e",
+          "dark": "#05df72"
+        }
+      }
+    },
+    "like": {
+      "$type": "color",
+      "$description": "Liked heart",
+      "$value": "#ec003f",
+      "$extensions": {
+        "modes": {
+          "light": "#ec003f",
+          "dark": "#ff637e"
+        }
+      }
+    },
+    "warning": {
+      "$type": "color",
+      "$description": "Warning text",
+      "$value": "#bb4d00",
+      "$extensions": {
+        "modes": {
+          "light": "#bb4d00",
+          "dark": "#ffb900"
+        }
+      }
+    },
+    "warning-bg": {
+      "$type": "color",
+      "$description": "Warning banner background",
+      "$value": "#fffbeb",
+      "$extensions": {
+        "modes": {
+          "light": "#fffbeb",
+          "dark": "rgb(70 25 1 / 0.6)"
+        }
+      }
+    },
+    "warning-fg": {
+      "$type": "color",
+      "$description": "Warning banner text",
+      "$value": "#7b3306",
+      "$extensions": {
+        "modes": {
+          "light": "#7b3306",
+          "dark": "#fee685"
+        }
+      }
+    }
+  }
+}

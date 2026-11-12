@@ -93,7 +93,7 @@ export default function EditProfilePage() {
             <label htmlFor="bio" className="block text-sm font-medium mb-1">
               Bio
             </label>
-            <span className={`text-xs ${form.bio.length > BIO_MAX ? "text-red-600" : "opacity-60"}`}>
+            <span className={`text-xs ${form.bio.length > BIO_MAX ? "text-danger" : "opacity-60"}`}>
               {form.bio.length}/{BIO_MAX}
             </span>
           </div>
@@ -104,11 +104,11 @@ export default function EditProfilePage() {
             value={form.bio}
             onChange={update}
             aria-invalid={Boolean(errors.bio)}
-            className={`w-full rounded-lg border bg-transparent px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/40 ${
-              errors.bio ? "border-red-500" : "border-black/15 dark:border-white/20"
+            className={`w-full rounded-lg border bg-transparent px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand/40 ${
+              errors.bio ? "border-danger" : "border-line-strong"
             }`}
           />
-          {errors.bio && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.bio}</p>}
+          {errors.bio && <p className="mt-1 text-sm text-danger">{errors.bio}</p>}
         </div>
 
         <div>
@@ -119,7 +119,7 @@ export default function EditProfilePage() {
               type="button"
               onClick={() => fileRef.current.click()}
               disabled={uploading}
-              className="rounded-lg border border-black/15 dark:border-white/20 px-4 py-2 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-50"
+              className="rounded-lg border border-line-strong px-4 py-2 text-sm font-medium hover:bg-subtle disabled:opacity-50"
             >
               {uploading ? "Uploading…" : "📷 Upload photo"}
             </button>
@@ -133,7 +133,7 @@ export default function EditProfilePage() {
               </button>
             )}
           </div>
-          {errors.avatarUrl && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.avatarUrl}</p>}
+          {errors.avatarUrl && <p className="mt-1 text-sm text-danger">{errors.avatarUrl}</p>}
           <p className="mt-1 text-xs opacity-60">JPG, PNG, GIF or WebP, up to 5 MB.</p>
         </div>
 

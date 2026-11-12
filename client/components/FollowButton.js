@@ -18,7 +18,7 @@ export default function FollowButton({ username, initialFollowing, onChange, siz
 
   if (!user) {
     return (
-      <Link href="/login" className={`${sizeClass} rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700`}>
+      <Link href="/login" className={`${sizeClass} rounded-full bg-brand text-white font-medium hover:bg-brand-hover`}>
         Follow
       </Link>
     );
@@ -50,7 +50,7 @@ export default function FollowButton({ username, initialFollowing, onChange, siz
         aria-pressed={following}
         className={`group ${sizeClass} min-w-24 rounded-full font-medium transition-colors disabled:opacity-60 ${
           following
-            ? "border border-black/20 dark:border-white/25 hover:border-red-500 hover:text-red-600 dark:hover:text-red-400"
+            ? "border border-field hover:border-danger hover:text-danger"
             : "bg-foreground text-background hover:opacity-90"
         }`}
       >
@@ -65,7 +65,7 @@ export default function FollowButton({ username, initialFollowing, onChange, siz
           "Follow"
         )}
       </button>
-      {error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="mt-1 text-xs text-danger">{error}</p>}
     </div>
   );
 }

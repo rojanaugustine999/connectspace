@@ -25,7 +25,7 @@ export default function GroupCard({ group }) {
           {group.description && <p className="mt-0.5 line-clamp-1 text-sm opacity-80">{group.description}</p>}
         </div>
         {badge && (
-          <span className="shrink-0 rounded-full bg-black/5 dark:bg-white/10 px-2.5 py-1 text-xs font-medium">{badge}</span>
+          <span className="shrink-0 rounded-full bg-subtle px-2.5 py-1 text-xs font-medium">{badge}</span>
         )}
       </Link>
     </li>

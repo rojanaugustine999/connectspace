@@ -30,7 +30,7 @@ export default function MePage() {
 
   return (
     <main className="min-h-[calc(100dvh-3.5rem)] flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-sm rounded-2xl border border-black/10 dark:border-white/15 p-6">
+      <div className="w-full max-w-sm rounded-2xl border border-line p-6">
         <div className="flex items-center gap-4">
           {/* The shared Avatar: shows the uploaded photo, or the same colour as everywhere else. */}
           <Avatar user={user} size="md" />
@@ -58,7 +58,7 @@ export default function MePage() {
         <div className="mt-6 flex gap-3">
           <Link
             href={`/u/${user.username}`}
-            className="flex-1 text-center rounded-lg border border-black/15 dark:border-white/20 py-2.5 font-medium hover:bg-black/5 dark:hover:bg-white/10"
+            className="flex-1 text-center rounded-lg border border-line-strong py-2.5 font-medium hover:bg-subtle"
           >
             View profile
           </Link>
