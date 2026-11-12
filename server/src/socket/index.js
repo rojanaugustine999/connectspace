@@ -9,6 +9,7 @@
 //                                               notification:new (from notification.service)
 import { Server } from "socket.io";
 import { COOKIE_NAME, verifyToken } from "../utils/token.js";
+import { accountExists } from "../middleware/auth.js";
 import { messageSchema } from "../validators/chat.schema.js";
 import * as chatService from "../services/chat.service.js";
 import { emitToUsers, setIO } from "./emitter.js";
@@ -53,16 +54,15 @@ export function initSocket(httpServer) {
   //      This is what the browser app uses (works when the API is on another domain, as in production).
   //   2. the session cookie: works when the socket connects to the same site that set the cookie
   //      (scripts and tests use this).
-  io.use((socket, next) => {
+  io.use(async (socket, next) => {
     try {
       const socketToken = socket.handshake.auth?.token;
-      if (socketToken) {
-        socket.data.userId = verifyToken(socketToken, "socket").sub;
-        return next();
-      }
       const cookieToken = parseCookies(socket.handshake.headers.cookie)[COOKIE_NAME];
-      if (!cookieToken) return next(new Error("unauthorized"));
-      socket.data.userId = verifyToken(cookieToken, "session").sub;
+      if (socketToken) socket.data.userId = verifyToken(socketToken, "socket").sub;
+      else if (cookieToken) socket.data.userId = verifyToken(cookieToken, "session").sub;
+      else return next(new Error("unauthorized"));
+      // Same as requireAuth: a valid token for a deleted account doesn't get in.
+      if (!(await accountExists(socket.data.userId))) return next(new Error("unauthorized"));
       next();
     } catch {
       next(new Error("unauthorized"));

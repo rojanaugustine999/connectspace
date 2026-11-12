@@ -9,6 +9,7 @@ import { Notification } from "../models/Notification.js";
 import { prisma } from "../config/prisma.js";
 import { httpError } from "../utils/httpError.js";
 import { createNotification } from "./notification.service.js";
+import { deleteImages } from "./storage.service.js";
 import { notifyMentions, extractMentions } from "./mention.service.js";
 import { getMembership, canViewGroup, isAdmin } from "./group.access.js";
 
@@ -125,6 +126,22 @@ export async function updatePost(postId, userId, { content }) {
   return hydrated;
 }
 
+// Deletes posts matching `filter` plus their likes, comments and notifications.
+// Returns the posts' image URLs so the caller can remove the files too.
+export async function deletePostsWhere(filter) {
+  const posts = await Post.find(filter, { images: 1 }).lean();
+  if (posts.length === 0) return [];
+  const postIds = posts.map((p) => p._id);
+  // MongoDB has no foreign keys / ON DELETE CASCADE, so we clean up related documents ourselves.
+  await Promise.all([
+    Like.deleteMany({ postId: { $in: postIds } }),
+    Comment.deleteMany({ postId: { $in: postIds } }),
+    Notification.deleteMany({ postId: { $in: postIds } }),
+    Post.deleteMany({ _id: { $in: postIds } }),
+  ]);
+  return posts.flatMap((p) => p.images ?? []);
+}
+
 export async function deletePost(postId, userId) {
   const post = await findPostOrThrow(postId, userId);
   const isAuthor = post.authorId === userId;
@@ -132,13 +149,8 @@ export async function deletePost(postId, userId) {
   // 403 Forbidden = "we know who you are, but you're not allowed to do this".
   if (!isAuthor && !isGroupAdmin) throw httpError(403, "You can only delete your own posts");
 
-  // MongoDB has no foreign keys / ON DELETE CASCADE, so we clean up related documents ourselves.
-  await Promise.all([
-    Post.deleteOne({ _id: postId }),
-    Like.deleteMany({ postId }),
-    Comment.deleteMany({ postId }),
-    Notification.deleteMany({ postId }),
-  ]);
+  const images = await deletePostsWhere({ _id: post._id });
+  await deleteImages(images); // the photos too, not just the post
 }
 
 // ---------- cursor pagination (used by profile posts, the home feed and explore) ----------

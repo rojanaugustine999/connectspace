@@ -8,6 +8,7 @@ import { uploadImage } from "@/lib/upload";
 import { useRequireAuth } from "@/lib/useRequireAuth";
 import Avatar from "@/components/Avatar";
 import FormField from "@/components/FormField";
+import DeleteAccount from "@/components/DeleteAccount";
 
 const BIO_MAX = 160;
 
@@ -152,6 +153,8 @@ export default function EditProfilePage() {
           )}
         </div>
       </form>
+
+      <DeleteAccount />
     </main>
   );
 }

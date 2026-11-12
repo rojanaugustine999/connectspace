@@ -49,6 +49,26 @@ async function saveToDisk(buffer, folder, ext) {
   return `${base}/uploads/${folder}/${name}`;
 }
 
+// Removes images we stored, by URL. "Best effort": failures are logged, never thrown, because
+// a leftover file is a much smaller problem than a half-finished delete. URLs we didn't create
+// (other sites, other Cloudinary accounts) are ignored.
+export async function deleteImages(urls = []) {
+  const cloudIds = [];
+  const files = [];
+  for (const url of urls) {
+    const cloud = /res\.cloudinary\.com\/[^/]+\/image\/upload\/(?:[^/]+\/)*?v\d+\/(connectspace\/[^.]+)\.\w+$/.exec(url ?? "");
+    if (cloud) cloudIds.push(cloud[1]);
+    const local = /\/uploads\/((?:avatars|posts)\/[\w-]+\.\w+)$/.exec(url ?? "");
+    if (local) files.push(path.join(UPLOAD_DIR, local[1]));
+  }
+  try {
+    if (cloudIds.length && storageDriver() === "cloudinary") await cloudinary.api.delete_resources(cloudIds);
+    await Promise.all(files.map((f) => fs.rm(f, { force: true })));
+  } catch (err) {
+    console.error("Could not delete images:", err.message);
+  }
+}
+
 // folder: "avatars" | "posts"
 export async function saveImage(file, folder) {
   if (!file) throw httpError(400, "Choose an image to upload");

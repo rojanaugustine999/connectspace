@@ -10,3 +10,8 @@ export const updateProfileSchema = z.object({
     .union([z.literal(""), z.string().trim().url("Enter a valid image URL (https://...)")])
     .optional(),
 });
+
+// Deleting your account: type your password again to confirm.
+export const deleteAccountSchema = z.object({
+  password: z.string().min(1, "Enter your password to confirm"),
+});

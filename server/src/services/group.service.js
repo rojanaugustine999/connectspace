@@ -2,11 +2,8 @@
 // The group's posts live in MongoDB with a groupId, like any other post.
 import { prisma } from "../config/prisma.js";
 import { httpError } from "../utils/httpError.js";
-import { Post } from "../models/Post.js";
-import { Like } from "../models/Like.js";
-import { Comment } from "../models/Comment.js";
-import { Notification } from "../models/Notification.js";
-import { createPost, paginatePosts } from "./post.service.js";
+import { createPost, paginatePosts, deletePostsWhere } from "./post.service.js";
+import { deleteImages } from "./storage.service.js";
 import { getMembership, isActiveMember, isAdmin, isOwner, canViewGroup } from "./group.access.js";
 
 const userFields = { id: true, username: true, name: true, avatarUrl: true, bio: true };
@@ -131,14 +128,9 @@ export async function deleteGroup(slug, userId) {
 
   // PostgreSQL deletes the memberships automatically (onDelete: Cascade).
   // MongoDB has no cascades, so we delete the group's posts and everything attached to them ourselves.
-  const postIds = await Post.find({ groupId: group.id }).distinct("_id");
-  await Promise.all([
-    Like.deleteMany({ postId: { $in: postIds } }),
-    Comment.deleteMany({ postId: { $in: postIds } }),
-    Notification.deleteMany({ postId: { $in: postIds } }),
-    Post.deleteMany({ groupId: group.id }),
-  ]);
+  const images = await deletePostsWhere({ groupId: group.id });
   await prisma.group.delete({ where: { id: group.id } });
+  await deleteImages(images);
 }
 
 // ---------- membership ----------

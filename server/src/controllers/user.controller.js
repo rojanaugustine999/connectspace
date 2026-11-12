@@ -1,9 +1,18 @@
 import * as userService from "../services/user.service.js";
+import { deleteAccount } from "../services/account.service.js";
+import { clearAuthCookie } from "../utils/token.js";
 
 // GET /api/users/search?q=ali
 export async function search(req, res) {
   const users = await userService.searchUsers(String(req.query.q ?? ""), req.user?.id);
   res.json({ users });
+}
+
+// DELETE /api/users/me   { password }
+export async function deleteMe(req, res) {
+  await deleteAccount(req.user.id, req.body.password);
+  clearAuthCookie(res); // log this browser out too
+  res.json({ deleted: true });
 }
 
 // PATCH /api/users/me

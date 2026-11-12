@@ -101,7 +101,7 @@ export function client(base) {
     get: (path, opts) => call("GET", path, undefined, opts),
     post: (path, body, opts) => call("POST", path, body, opts),
     patch: (path, body, opts) => call("PATCH", path, body, opts),
-    del: (path, opts) => call("DELETE", path, undefined, opts),
+    del: (path, body, opts) => call("DELETE", path, body, opts),
   };
 }
 

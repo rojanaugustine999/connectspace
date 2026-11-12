@@ -10,6 +10,11 @@ export function setIO(instance) {
   io = instance;
 }
 
+// After an account is deleted: close every open tab/device of that user.
+export function disconnectUser(userId) {
+  io?.in(`user:${userId}`).disconnectSockets(true);
+}
+
 export function emitToUsers(userIds, event, data) {
   if (!io || userIds.length === 0) return; // e.g. in scripts/tests without a socket server
   // Chaining .to() targets several rooms in ONE emit. Socket.io de-duplicates,
