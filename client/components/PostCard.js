@@ -3,12 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import RichText from "@/components/RichText";
+import { optimizedImage } from "@/lib/image";
 import { api } from "@/lib/api";
 import { timeAgo } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import LikeButton from "@/components/LikeButton";
 
-export default function PostCard({ post, onDeleted, linkToPost = true, commentCount, showGroup = true, highlight }) {
+export default function PostCard({ post, onDeleted, linkToPost = true, commentCount, showGroup = true, highlight, priority = false }) {
   const [deleting, setDeleting] = useState(false);
   const comments = commentCount ?? post.commentCount;
   const postUrl = `/p/${post.id}`;
@@ -27,7 +28,8 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
 
   return (
     <article className={`flex gap-3 py-4 ${deleting ? "opacity-40" : ""}`}>
-      <Link href={`/u/${post.author.username}`} className="shrink-0">
+      {/* The name link next to it goes to the same profile, so the avatar is skipped by keyboard and screen readers. */}
+      <Link href={`/u/${post.author.username}`} className="shrink-0" tabIndex={-1} aria-hidden="true">
         <Avatar user={post.author} />
       </Link>
 
@@ -63,12 +65,17 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
           <div className={`mt-2 grid gap-1 overflow-hidden rounded-xl ${post.images.length > 1 ? "grid-cols-2" : ""}`}>
             {post.images.map((src, i) => (
               <a key={src} href={src} target="_blank" rel="noreferrer" className="block bg-subtle">
+                {/* Fixed shapes (4:3 for one photo, squares for several) reserve the space before the
+                    photo arrives, so the page doesn't jump. The first post's photo loads first (priority). */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={src}
+                  src={optimizedImage(src, post.images.length > 1 ? 600 : 1200)}
                   alt={`Photo ${i + 1} of ${post.images.length} by ${post.author.name}`}
-                  loading="lazy"
-                  className={`w-full object-cover ${post.images.length > 1 ? "aspect-square" : "max-h-[28rem]"}`}
+                  width={post.images.length > 1 ? 600 : 1200}
+                  height={post.images.length > 1 ? 600 : 900}
+                  loading={priority && i === 0 ? "eager" : "lazy"}
+                  fetchPriority={priority && i === 0 ? "high" : "auto"}
+                  className={`h-auto w-full object-cover ${post.images.length > 1 ? "aspect-square" : "aspect-[4/3]"}`}
                 />
               </a>
             ))}

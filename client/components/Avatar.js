@@ -1,3 +1,5 @@
+import { optimizedImage } from "@/lib/image";
+
 // Shows the user's photo, or their first initial on a colour picked from their username.
 const COLORS = ["bg-brand", "bg-emerald-600", "bg-violet-600", "bg-rose-600", "bg-amber-600", "bg-cyan-600"];
 
@@ -6,6 +8,8 @@ const SIZES = {
   md: "size-12 text-lg",
   lg: "size-20 text-3xl sm:size-24",
 };
+// Pixels to download: about twice the largest displayed size, so photos stay sharp on retina screens.
+const PIXELS = { sm: 72, md: 96, lg: 192 };
 
 export default function Avatar({ user, size = "md" }) {
   const sizeClass = SIZES[size];
@@ -13,7 +17,12 @@ export default function Avatar({ user, size = "md" }) {
   if (user.avatarUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={user.avatarUrl} alt="" className={`${sizeClass} shrink-0 rounded-full object-cover bg-subtle-strong`} />
+      <img
+        src={optimizedImage(user.avatarUrl, PIXELS[size])}
+        alt=""
+        width={PIXELS[size]}
+        height={PIXELS[size]}
+        className={`${sizeClass} shrink-0 rounded-full object-cover bg-subtle-strong`} />
     );
   }
 

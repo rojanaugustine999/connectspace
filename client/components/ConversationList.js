@@ -87,7 +87,7 @@ export default function ConversationList() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-2">
                   <p className={`truncate ${c.unreadCount ? "font-bold" : "font-semibold"}`}>{c.otherUser.name}</p>
-                  {c.lastMessage && <span className="shrink-0 text-xs opacity-50">{timeAgo(c.lastMessage.at)}</span>}
+                  {c.lastMessage && <span className="shrink-0 text-xs opacity-70">{timeAgo(c.lastMessage.at)}</span>}
                 </div>
                 <div className="flex items-center justify-between gap-2">
                   <p className={`truncate text-sm ${c.unreadCount ? "font-medium" : "opacity-60"}`}>

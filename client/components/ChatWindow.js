@@ -259,7 +259,7 @@ export default function ChatWindow({ conversationId }) {
                 >
                   {m.text}
                 </div>
-                <span className="mt-0.5 px-1 text-[11px] opacity-50">
+                <span className="mt-0.5 px-1 text-[11px] opacity-70">
                   {m.pending ? "Sending…" : m.failed ? null : timeOf(m.createdAt)}
                   {m.id === lastMine?.id && seen && " · Seen"}
                 </span>

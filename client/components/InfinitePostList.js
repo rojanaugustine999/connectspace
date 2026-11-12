@@ -110,8 +110,8 @@ export default function InfinitePostList({
       {status !== "loading" && posts.length === 0 && status !== "error" && empty}
 
       <div className="divide-y divide-line">
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} onDeleted={removePost} showGroup={showGroup} highlight={highlight} />
+        {posts.map((post, i) => (
+          <PostCard key={post.id} post={post} priority={i === 0} onDeleted={removePost} showGroup={showGroup} highlight={highlight} />
         ))}
       </div>
 
@@ -131,7 +131,7 @@ export default function InfinitePostList({
             </button>
           </p>
         )}
-        {status === "done" && posts.length > 0 && <p className="opacity-50">{doneText}</p>}
+        {status === "done" && posts.length > 0 && <p className="opacity-70">{doneText}</p>}
       </div>
     </div>
   );

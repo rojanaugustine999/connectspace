@@ -75,7 +75,7 @@ function Comment({ comment, postId, isReply, canReply, onReplyAdded, onDelete })
 
   return (
     <div className="flex gap-3">
-      <Link href={`/u/${comment.author.username}`} className="shrink-0">
+      <Link href={`/u/${comment.author.username}`} className="shrink-0" tabIndex={-1} aria-hidden="true">
         <Avatar user={comment.author} size="sm" />
       </Link>
       <div className="min-w-0 flex-1">

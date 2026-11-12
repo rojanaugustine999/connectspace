@@ -47,7 +47,10 @@ export default function PostPage() {
       <button onClick={() => router.back()} className="text-sm opacity-70 hover:underline">
         ← Back
       </button>
+      {/* Every page needs one main heading; screen-reader users jump to it to know where they are. */}
+      <h1 className="sr-only">Post by {post.author.name}</h1>
       <PostCard
+        priority
         key={post.id + String(post.likedByMe)}
         post={post}
         linkToPost={false}

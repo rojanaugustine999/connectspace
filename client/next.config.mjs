@@ -10,6 +10,10 @@ const API_ORIGIN = process.env.API_ORIGIN || "http://localhost:5000";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Put the page title and description in <head> for every visitor, not only for known search bots.
+  // (Next.js otherwise "streams" them later into <body> on dynamic pages, which link previews and
+  // SEO checkers like Lighthouse don't read.)
+  htmlLimitedBots: /.*/,
   async rewrites() {
     return [{ source: "/api/:path*", destination: `${API_ORIGIN}/api/:path*` }];
   },

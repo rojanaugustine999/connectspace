@@ -60,7 +60,7 @@ export default function NotificationsPage() {
         <ul className="mt-4 divide-y divide-line">
           {items.map((n) => (
             <li key={n.id} className={`flex items-center gap-3 py-3 ${n.isRead ? "" : "font-medium"}`}>
-              <Link href={`/u/${n.actor.username}`} className="shrink-0">
+              <Link href={`/u/${n.actor.username}`} className="shrink-0" tabIndex={-1} aria-hidden="true">
                 <Avatar user={n.actor} />
               </Link>
               <p className="min-w-0 flex-1">
