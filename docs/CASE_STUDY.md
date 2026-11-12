@@ -42,6 +42,7 @@ Every list has three designed states: **loading** (skeletons, not spinners), **e
 - The Follow button is a real toggle (`aria-pressed`) with a stable label ("Follow @alice"). Its "Unfollow" hover text only appears on devices with a mouse, because a tap on a phone would leave it stuck.
 - Form errors are linked to their inputs (`aria-invalid` and `aria-describedby`), and unread badges include screen-reader text ("3 unread").
 - Phone nav icons are labelled links, not decorative emoji.
+- **Photo descriptions:** each photo in a post can have a short description. Screen readers read it instead of a generic "Photo 1 of 2 by Alice", and an **ALT** badge lets sighted readers see it too, as on Mastodon and X. The field sits right under the photos while you write, so describing a photo is part of posting it, not a hidden setting.
 - The account menu on the avatar (View profile, Edit profile, Log out) follows the WAI-ARIA menu button pattern: Enter opens it and focuses the first item, arrow keys move and wrap, Escape closes it and returns focus to the avatar.
 
 ### 4. Mobile first
@@ -150,7 +151,7 @@ Two safety rules: the server asks the API as a logged-out visitor, so private gr
 - **Live** on Vercel (website) and Render (API), with PostgreSQL, MongoDB and Cloudinary
 - **Accessibility 100, and performance 99–100 on a phone for the home, profile and post pages,** in Lighthouse on the live site, with 0 axe issues in light and dark mode
 - Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos (editable afterwards, with an "edited" label), likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, **post search**, link previews for shared posts and profiles, light and dark themes, **public and private groups** with roles, and **account deletion** that cleans up both databases
-- **57 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
+- **60 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
 
 ## What I'd do next
 

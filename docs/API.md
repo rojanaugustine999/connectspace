@@ -22,7 +22,7 @@ so authentication is a first-party `httpOnly` cookie. All bodies are JSON unless
 
 | Method | Route | Auth |
 |---|---|---|
-| POST | `/api/posts` | required |
+| POST | `/api/posts` `{ content, images?, imageDescriptions? }` (descriptions: one per photo, in order, up to 200 characters each) | required |
 | GET | `/api/posts/feed?cursor=` (people you follow + you) | required |
 | GET | `/api/posts/explore?cursor=` (everyone) | optional |
 | GET | `/api/posts/search?q=&cursor=` (text search, best match first; cursor is a page number, max 5 pages) | optional |

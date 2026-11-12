@@ -33,13 +33,13 @@
 - **Accounts:** sign up, log in, profile photo and bio, and **delete your account** with everything in it (password required). Passwords hashed with bcrypt; JWT in an `httpOnly` cookie
 - **Social graph:** follow and unfollow, followers/following lists
 - **Search:** people by name or @username, and posts by word (MongoDB text search, best match first, matching words highlighted; private group posts only for members)
-- **Feed:** posts from people you follow, with **infinite scroll**, photos (up to 4), likes, threaded comments, and editing your own posts (with an "edited" label)
+- **Feed:** posts from people you follow, with **infinite scroll**, photos (up to 4, each with an optional description for screen readers), likes, threaded comments, and editing your own posts (with an "edited" label)
 - **Real time:** one-to-one chat with **typing indicators** and **read receipts**, plus **live notifications**, **@mentions** with suggestions as you type, and unread badges (Socket.io)
 - **Groups:** public or private, owner/admin/member roles, join requests, group-only posts
 - **Light and dark themes:** built on [design tokens](docs/design-tokens.json) shared with Figma; follows the device setting, or pick one in the account menu
 - **Fast first paint and link previews:** for logged-out visitors, the first posts are rendered on the server; shared post and profile links show their own title and photo
 - **Production details:** per-visitor rate limiting, private content hidden as 404, image type checks, graceful shutdown
-- **Tested:** 57 automated API tests (real HTTP and Socket.io clients against real databases) run on every push in [GitHub Actions](.github/workflows/ci.yml)
+- **Tested:** 60 automated API tests (real HTTP and Socket.io clients against real databases) run on every push in [GitHub Actions](.github/workflows/ci.yml)
 - **Audited:** Lighthouse accessibility 100, and phone performance 99–100 on the home, profile and post pages of the live site, 0 axe issues in light and dark mode ([before and after](docs/CASE_STUDY.md#measuring-it-an-accessibility-and-speed-audit))
 
 ## Screenshots
