@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import RichText from "@/components/RichText";
 import { api } from "@/lib/api";
 import { timeAgo } from "@/lib/format";
 import Avatar from "@/components/Avatar";
@@ -56,7 +57,7 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
           </Link>
         )}
 
-        <p className="mt-1 whitespace-pre-line break-words">{post.content}</p>
+        <RichText text={post.content} className="mt-1" />
 
         {post.images?.length > 0 && (
           <div className={`mt-2 grid gap-1 overflow-hidden rounded-xl ${post.images.length > 1 ? "grid-cols-2" : ""}`}>

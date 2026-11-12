@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 import { uploadImage } from "@/lib/upload";
 import { useAuth } from "@/lib/auth-context";
 import Avatar from "@/components/Avatar";
+import MentionField from "@/components/MentionField";
 
 const MAX = 2000;
 const MAX_IMAGES = 4;
@@ -75,7 +76,8 @@ export default function PostComposer({ onCreated, endpoint = "/api/posts", place
         <label htmlFor="new-post" className="sr-only">
           New post
         </label>
-        <textarea
+        <MentionField
+          as="textarea"
           id="new-post"
           rows={3}
           value={content}

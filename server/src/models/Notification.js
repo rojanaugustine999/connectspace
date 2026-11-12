@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const notificationSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true }, // who receives it
-    type: { type: String, enum: ["follow", "like", "comment", "message"], required: true },
+    type: { type: String, enum: ["follow", "like", "comment", "message", "mention"], required: true },
     actorId: { type: String, required: true }, // who did the action
     postId: { type: mongoose.Schema.Types.ObjectId, ref: "Post", default: null },
     isRead: { type: Boolean, default: false },

@@ -14,6 +14,7 @@ const MESSAGES = {
   follow: "started following you",
   like: "liked your post",
   comment: "commented on your post",
+  mention: "mentioned you",
   message: "sent you a message",
 };
 
@@ -51,7 +52,7 @@ export default function NotificationsPage() {
       {!items && !error && <p className="mt-6 opacity-60">Loading…</p>}
       {items?.length === 0 && (
         <p className="mt-10 text-center opacity-60">
-          Nothing yet. When someone follows you, you&apos;ll see it here.
+          Nothing yet. When someone follows you, likes your post or mentions you, you&apos;ll see it here.
         </p>
       )}
 

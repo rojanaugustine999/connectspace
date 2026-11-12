@@ -9,6 +9,7 @@ import { Notification } from "../models/Notification.js";
 import { prisma } from "../config/prisma.js";
 import { httpError } from "../utils/httpError.js";
 import { createNotification } from "./notification.service.js";
+import { notifyMentions } from "./mention.service.js";
 import { getMembership, canViewGroup, isAdmin } from "./group.access.js";
 
 const PAGE_SIZE = 10;
@@ -84,6 +85,9 @@ async function findPostOrThrow(postId, viewerId) {
 
 export async function createPost(userId, { content, images = [] }, groupId = null) {
   const post = await Post.create({ authorId: userId, content, images, groupId });
+  await notifyMentions({ text: content, actorId: userId, post }).catch((err) =>
+    console.error("Could not create mention notifications:", err.message)
+  );
   const [hydrated] = await hydratePosts([post.toObject()], userId);
   return hydrated;
 }
@@ -265,6 +269,10 @@ export async function addComment(postId, userId, { content, parentId }) {
 
   await createNotification({ userId: post.authorId, type: "comment", actorId: userId, postId }).catch((err) =>
     console.error("Could not create comment notification:", err.message)
+  );
+  // The post author already got "commented on your post", so a mention of them adds nothing.
+  await notifyMentions({ text: content, actorId: userId, post, skipUserIds: [post.authorId] }).catch((err) =>
+    console.error("Could not create mention notifications:", err.message)
   );
 
   const authors = await loadAuthors([userId]);

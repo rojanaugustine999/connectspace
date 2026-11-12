@@ -6,10 +6,12 @@
 //   DELETE /api/posts/:id/comments/:commentId
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import RichText from "@/components/RichText";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { timeAgo } from "@/lib/format";
 import Avatar from "@/components/Avatar";
+import MentionField from "@/components/MentionField";
 
 function CommentForm({ postId, parentId, onAdded, autoFocus, placeholder, onCancel }) {
   const [content, setContent] = useState("");
@@ -41,7 +43,7 @@ function CommentForm({ postId, parentId, onAdded, autoFocus, placeholder, onCanc
         {placeholder}
       </label>
       <div className="flex gap-2">
-        <input
+        <MentionField
           id={`comment-${parentId ?? "new"}`}
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -81,7 +83,7 @@ function Comment({ comment, postId, isReply, canReply, onReplyAdded, onDelete })
           <Link href={`/u/${comment.author.username}`} className="text-sm font-semibold hover:underline">
             {comment.author.name}
           </Link>
-          <p className="whitespace-pre-line break-words">{comment.content}</p>
+          <RichText text={comment.content} />
         </div>
         <div className="mt-1 flex gap-3 px-3 text-xs">
           <time dateTime={comment.createdAt} className="opacity-60">
