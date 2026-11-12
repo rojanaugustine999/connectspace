@@ -35,13 +35,25 @@
 
 ## Screenshots
 
-| Profile | People |
-|---|---|
-| <img src="docs/screenshots/profile.png" alt="Profile page"> | <img src="docs/screenshots/people.png" alt="People search"> |
+### Logged in
 
-| Sign up | On a phone |
+| Home feed | People you follow |
 |---|---|
-| <img src="docs/screenshots/signup.png" alt="Sign-up form"> | <img src="docs/screenshots/mobile-profile.png" alt="Profile on a phone" width="260"> |
+| <img src="docs/screenshots/feed.png" alt="Home feed with photo posts from people you follow" width="400"> | <img src="docs/screenshots/people-following.png" alt="People page showing who you follow"> |
+
+| Messages | Live notifications |
+|---|---|
+| <img src="docs/screenshots/messages.png" alt="Messages: conversation list"> | <img src="docs/screenshots/notifications.png" alt="Notifications: new followers"> |
+
+| Your profile | On a phone |
+|---|---|
+| <img src="docs/screenshots/my-profile.png" alt="Your own profile with photo, posts and the post composer"> | <img src="docs/screenshots/mobile-profile.png" alt="Profile on a phone" width="260"> |
+
+### Logged out
+
+| A public profile | Sign up |
+|---|---|
+| <img src="docs/screenshots/profile.png" alt="Public profile page"> | <img src="docs/screenshots/signup.png" alt="Sign-up form"> |
 
 ## Architecture
 

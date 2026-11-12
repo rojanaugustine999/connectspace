@@ -23,6 +23,11 @@ So I set myself one constraint: **every interaction must be backed by a real ser
 ## Design principles, and how the backend made them possible
 
 ### 1. Feel instant
+
+| Home feed | Live notifications |
+|---|---|
+| <img src="screenshots/feed.png" width="320" alt="Home feed with photo posts"> | <img src="screenshots/notifications.png" alt="Notifications showing new followers"> |
+
 Likes, follows and chat messages update the UI **before** the server answers (optimistic UI) and roll back if the request fails. The design idea needed backend support: likes use an atomic `$inc` plus a unique index, so double-taps can't double-count. Chat messages carry a `clientId`, so the "Sending…" bubble is swapped for the saved message without duplicates.
 
 ### 2. Never a dead end
