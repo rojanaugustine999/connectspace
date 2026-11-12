@@ -187,6 +187,49 @@ export function getExplore(viewerId, cursor) {
   return paginatePosts(PERSONAL, viewerId, cursor);
 }
 
+// ---------- search ----------
+
+// Search ranks posts by relevance, not by date, so the date cursor above doesn't work here.
+// Instead the cursor is just the page number (0, 1, 2…) and we skip that many posts.
+// "skip" gets slower the deeper you go, so we stop after SEARCH_PAGES pages (50 results):
+// nobody reads past that, they type a better search.
+const SEARCH_PAGES = 5;
+
+// Which groups' posts may this person see? Every public group, plus private groups they're an
+// active member of. (At a much bigger scale you'd copy "isPrivate" onto each post instead.)
+async function visibleGroupIds(viewerId) {
+  const [publicGroups, memberships] = await Promise.all([
+    prisma.group.findMany({ where: { isPrivate: false }, select: { id: true } }),
+    viewerId ? prisma.groupMember.findMany({ where: { userId: viewerId, status: "ACTIVE" }, select: { groupId: true } }) : [],
+  ]);
+  return [...new Set([...publicGroups.map((g) => g.id), ...memberships.map((m) => m.groupId)])];
+}
+
+export async function searchPosts(query, viewerId, cursor) {
+  const q = String(query ?? "").trim();
+  if (q.length < 2) throw httpError(400, "Type at least 2 characters");
+  if (q.length > 100) throw httpError(400, "That search is too long");
+
+  const page = cursor ? Number(cursor) : 0;
+  if (!Number.isInteger(page) || page < 0 || page >= SEARCH_PAGES) throw httpError(400, "Invalid cursor");
+
+  const filter = {
+    $text: { $search: q },
+    groupId: { $in: [null, ...(await visibleGroupIds(viewerId))] }, // null = personal posts
+  };
+  const posts = await Post.find(filter, { score: { $meta: "textScore" } })
+    .sort({ score: { $meta: "textScore" }, createdAt: -1, _id: -1 }) // best match first, then newest
+    .skip(page * PAGE_SIZE)
+    .limit(PAGE_SIZE + 1) // the "+1 trick" again: is there another page?
+    .lean();
+
+  const hasMore = posts.length > PAGE_SIZE && page + 1 < SEARCH_PAGES;
+  return {
+    posts: await hydratePosts(posts.slice(0, PAGE_SIZE), viewerId),
+    nextCursor: hasMore ? String(page + 1) : null,
+  };
+}
+
 // ---------- likes ----------
 
 export async function likePost(postId, userId) {

@@ -6,6 +6,11 @@ export async function create(req, res) {
   res.status(201).json({ post });
 }
 
+// GET /api/posts/search?q=words&cursor=1
+export async function search(req, res) {
+  res.json(await postService.searchPosts(req.query.q, req.user?.id, req.query.cursor));
+}
+
 // GET /api/posts/:id
 export async function getOne(req, res) {
   res.json({ post: await postService.getPost(req.params.id, req.user?.id) });

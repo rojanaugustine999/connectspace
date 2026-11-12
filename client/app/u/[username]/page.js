@@ -36,7 +36,7 @@ export default function ProfilePage() {
       <main className="p-8 text-center">
         <h1 className="text-xl font-bold">User not found</h1>
         <p className="mt-2 opacity-70">There&apos;s no one called @{username}.</p>
-        <Link href="/people" className="mt-4 inline-block underline">
+        <Link href="/search" className="mt-4 inline-block underline">
           Find people
         </Link>
       </main>

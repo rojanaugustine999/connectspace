@@ -22,6 +22,8 @@ export default function InfinitePostList({
   empty,
   viewerKey,
   onFirstPage,
+  highlight, // search page: words to highlight in each post
+  doneText = "You're all caught up ✨",
 }) {
   const [posts, setPosts] = useState([]);
   const [cursor, setCursor] = useState(null);
@@ -109,7 +111,7 @@ export default function InfinitePostList({
 
       <div className="divide-y divide-line">
         {posts.map((post) => (
-          <PostCard key={post.id} post={post} onDeleted={removePost} showGroup={showGroup} />
+          <PostCard key={post.id} post={post} onDeleted={removePost} showGroup={showGroup} highlight={highlight} />
         ))}
       </div>
 
@@ -129,7 +131,7 @@ export default function InfinitePostList({
             </button>
           </p>
         )}
-        {status === "done" && posts.length > 0 && <p className="opacity-50">You&apos;re all caught up ✨</p>}
+        {status === "done" && posts.length > 0 && <p className="opacity-50">{doneText}</p>}
       </div>
     </div>
   );

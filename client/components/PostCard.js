@@ -8,7 +8,7 @@ import { timeAgo } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import LikeButton from "@/components/LikeButton";
 
-export default function PostCard({ post, onDeleted, linkToPost = true, commentCount, showGroup = true }) {
+export default function PostCard({ post, onDeleted, linkToPost = true, commentCount, showGroup = true, highlight }) {
   const [deleting, setDeleting] = useState(false);
   const comments = commentCount ?? post.commentCount;
   const postUrl = `/p/${post.id}`;
@@ -57,7 +57,7 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
           </Link>
         )}
 
-        <RichText text={post.content} className="mt-1" />
+        <RichText text={post.content} className="mt-1" highlight={highlight} />
 
         {post.images?.length > 0 && (
           <div className={`mt-2 grid gap-1 overflow-hidden rounded-xl ${post.images.length > 1 ? "grid-cols-2" : ""}`}>

@@ -14,7 +14,7 @@ function EmptyFeed() {
       <h2 className="font-semibold">Your feed is empty</h2>
       <p className="mt-1 text-sm opacity-70">Follow people to see their posts here, or write your first post above.</p>
       <Link
-        href="/people"
+        href="/search"
         className="mt-4 inline-block rounded-full bg-brand px-5 py-2 font-medium text-white hover:bg-brand-hover"
       >
         Find people to follow

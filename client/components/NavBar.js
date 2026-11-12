@@ -23,7 +23,7 @@ function Badge({ count }) {
 // Line icons for the phone nav (the text labels show from the "sm" breakpoint up).
 // Same 2px stroke style as the like/comment icons, so the UI uses one icon language.
 const ICONS = {
-  people: (
+  search: (
     <>
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.5-3.5" />
@@ -128,9 +128,9 @@ export default function NavBar() {
           <Logo wordmark="responsive" />
         </Link>
 
-        <NavLink href="/people" active={pathname === "/people"}>
-          <span className="sr-only sm:not-sr-only">People</span>
-          <NavIcon name="people" />
+        <NavLink href="/search" active={pathname === "/search"}>
+          <span className="sr-only sm:not-sr-only">Search</span>
+          <NavIcon name="search" />
         </NavLink>
         <NavLink href="/groups" active={pathname.startsWith("/groups")}>
           <span className="sr-only sm:not-sr-only">Groups</span>

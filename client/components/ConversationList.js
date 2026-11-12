@@ -60,7 +60,7 @@ export default function ConversationList() {
         <p>No messages yet.</p>
         <p className="mt-1">
           Open someone&apos;s profile and tap <strong>Message</strong>, or{" "}
-          <Link href="/people" className="underline">
+          <Link href="/search" className="underline">
             find people
           </Link>
           .

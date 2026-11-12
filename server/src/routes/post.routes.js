@@ -12,6 +12,7 @@ router.post("/", requireAuth, validate(createPostSchema), posts.create);
 // These must come before "/:id", otherwise "feed" would be treated as a post id.
 router.get("/feed", requireAuth, posts.feed);
 router.get("/explore", optionalAuth, posts.explore);
+router.get("/search", optionalAuth, posts.search);
 
 // Every route below has :id → check it's a valid MongoDB id once, for all of them.
 router.param("id", validateObjectId("id"));

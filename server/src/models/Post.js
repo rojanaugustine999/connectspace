@@ -18,5 +18,9 @@ postSchema.index({ authorId: 1, createdAt: -1, _id: -1 });
 postSchema.index({ groupId: 1, createdAt: -1, _id: -1 }); // a group's posts, newest first
 // For explore (everyone's posts, newest first).
 postSchema.index({ createdAt: -1, _id: -1 });
+// For search: a "text index" splits every post into words (and word stems, so "walks" finds
+// "walking"), skips common words like "the", and lets MongoDB rank posts by how well they match.
+// A collection can have only ONE text index.
+postSchema.index({ content: "text" });
 
 export const Post = mongoose.model("Post", postSchema);
