@@ -13,13 +13,20 @@ import { optimizedImage } from "@/lib/image";
 
 const API_ORIGIN = process.env.API_ORIGIN || "http://localhost:5000";
 
-export async function fetchPublic(path) {
+export async function fetchPublic(path, { revalidate = 60 } = {}) {
   try {
-    const res = await fetch(`${API_ORIGIN}${path}`, { signal: AbortSignal.timeout(3000), next: { revalidate: 60 } });
+    const res = await fetch(`${API_ORIGIN}${path}`, { signal: AbortSignal.timeout(3000), next: { revalidate } });
     return res.ok ? await res.json() : null;
   } catch {
     return null; // timeout, API asleep or down → generic preview
   }
+}
+
+// Is this visitor logged in? The login cookie is httpOnly, so JavaScript in the browser can't read
+// it, but the website's server can. No cookie means a guest, so the server can fetch public data for them.
+export async function isGuest() {
+  const { cookies } = await import("next/headers");
+  return !(await cookies()).has("token");
 }
 
 // "My Talking Macaw and a very long story…" → at most `max` characters, cut at a word.

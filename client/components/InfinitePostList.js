@@ -23,11 +23,14 @@ export default function InfinitePostList({
   viewerKey,
   onFirstPage,
   highlight, // search page: words to highlight in each post
+  initialData, // first page already fetched by the server ({ posts, nextCursor }), shown straight away
   doneText = "You're all caught up ✨",
 }) {
-  const [posts, setPosts] = useState([]);
-  const [cursor, setCursor] = useState(null);
-  const [status, setStatus] = useState("loading"); // loading | idle | more | error | done
+  const [posts, setPosts] = useState(initialData?.posts ?? []);
+  const [cursor, setCursor] = useState(initialData?.nextCursor ?? null);
+  // loading | idle | more | error | done
+  const [status, setStatus] = useState(initialData ? (initialData.nextCursor ? "idle" : "done") : "loading");
+  const skipFirstLoad = useRef(Boolean(initialData)); // the server already sent page 1
   const sentinelRef = useRef(null);
   const busyRef = useRef(false); // stops two fetches running at once
   const requestRef = useRef(0); // ignores late responses from an old endpoint
@@ -57,6 +60,10 @@ export default function InfinitePostList({
 
   // First page (and again if the endpoint or the logged-in user changes).
   useEffect(() => {
+    if (skipFirstLoad.current) {
+      skipFirstLoad.current = false;
+      return;
+    }
     busyRef.current = false;
     setPosts([]);
     setCursor(null);

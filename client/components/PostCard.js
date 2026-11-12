@@ -44,10 +44,12 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
           </span>
           {linkToPost ? (
             <Link href={postUrl} className="shrink-0 opacity-60 hover:underline">
-              <time dateTime={post.createdAt}>{timeAgo(post.createdAt)}</time>
+              <time dateTime={post.createdAt} suppressHydrationWarning>
+                {timeAgo(post.createdAt)}
+              </time>
             </Link>
           ) : (
-            <time dateTime={post.createdAt} className="shrink-0 opacity-60">
+            <time dateTime={post.createdAt} className="shrink-0 opacity-60" suppressHydrationWarning>
               {timeAgo(post.createdAt)}
             </time>
           )}
@@ -70,6 +72,9 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={optimizedImage(src, post.images.length > 1 ? 600 : 1200)}
+                  // Let the browser pick the smallest copy that's still sharp: a phone gets ~600px, desktop 1200px.
+                  srcSet={[400, 600, 900, 1200].map((w) => `${optimizedImage(src, w)} ${w}w`).join(", ")}
+                  sizes={post.images.length > 1 ? "(max-width: 640px) 45vw, 300px" : "(max-width: 640px) 90vw, 600px"}
                   alt={`Photo ${i + 1} of ${post.images.length} by ${post.author.name}`}
                   width={post.images.length > 1 ? 600 : 1200}
                   height={post.images.length > 1 ? 600 : 900}
