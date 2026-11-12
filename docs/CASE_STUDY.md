@@ -104,11 +104,35 @@ flowchart LR
 
 The biggest lesson: **a vague error message is a design problem.** Half of these took longer than needed because something said "Something went wrong" instead of what actually happened.
 
+## Measuring it: an accessibility and speed audit
+
+I checked the live site with **axe** (accessibility rules, run on 9 pages in both light and dark mode) and **Lighthouse** (Google's 0–100 scores), then fixed what they found and measured again.
+
+| | Before | After |
+|---|---|---|
+| axe issues (9 pages × 2 themes) | 25, on 5 pages | **0** |
+| Lighthouse accessibility | 91–96 | **100** on every page tested |
+| Lighthouse SEO | 91–100 | **100** |
+| Performance, home page on a phone | 60 | **93** |
+| Performance, home page on desktop | 78 | **99** |
+| Layout shift, home page on a phone (good is under 0.1) | 0.38 | **0** |
+
+What the fixes were:
+
+- **Avatar links had no name.** A screen reader heard just "link", up to 10 times on the home page. The avatar sits next to the person's name, which already links to the same profile, so the avatar is now skipped by keyboard and screen readers: one clear link instead of two.
+- **Faint text** ("You're all caught up", message times) was 3.4:1 against the background; text needs 4.5:1. Slightly darker now, in both themes.
+- **The post page had no main heading** for screen-reader users to jump to.
+- **The home page downloaded 4.9 MB**, mostly full-size photos shown in a 550 px column. Photos now come from Cloudinary resized to the size they're shown at and in modern formats (WebP/AVIF), and avatars at their small display size.
+- **The page jumped while photos loaded.** Photos now have a fixed shape (4:3, or squares when there are several), so their space is reserved before they arrive, and the first one loads first.
+
+What's left on purpose: when you're logged out, the site asks the API "who am I?" and gets "not logged in", which the browser logs as an error (Best practices 96). And on a slow phone connection, posts appear about 3 s after the page, because they're fetched after it loads; rendering the first posts on the server would fix that.
+
 ## Outcome
 
 - **Live** on Vercel (website) and Render (API), with PostgreSQL, MongoDB and Cloudinary
-- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos, likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, light and dark themes, and **public and private groups** with roles
-- **41 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
+- **Accessibility 100 and performance 93–99** in Lighthouse on the live site, with 0 axe issues in light and dark mode
+- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos, likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, **post search**, light and dark themes, and **public and private groups** with roles
+- **49 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
 
 ## What I'd do next
 

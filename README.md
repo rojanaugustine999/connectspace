@@ -38,7 +38,8 @@
 - **Groups:** public or private, owner/admin/member roles, join requests, group-only posts
 - **Light and dark themes:** built on [design tokens](docs/design-tokens.json) shared with Figma; follows the device setting, or pick one in the account menu
 - **Production details:** per-visitor rate limiting, private content hidden as 404, image type checks, graceful shutdown
-- **Tested:** 41 automated API tests (real HTTP and Socket.io clients against real databases) run on every push in [GitHub Actions](.github/workflows/ci.yml)
+- **Tested:** 49 automated API tests (real HTTP and Socket.io clients against real databases) run on every push in [GitHub Actions](.github/workflows/ci.yml)
+- **Audited:** Lighthouse accessibility 100 and performance 93–99 on the live site, 0 axe issues in light and dark mode ([before and after](docs/CASE_STUDY.md#measuring-it-an-accessibility-and-speed-audit))
 
 ## Screenshots
 
