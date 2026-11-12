@@ -125,13 +125,25 @@ What the fixes were:
 - **The home page downloaded 4.9 MB**, mostly full-size photos shown in a 550 px column. Photos now come from Cloudinary resized to the size they're shown at and in modern formats (WebP/AVIF), and avatars at their small display size.
 - **The page jumped while photos loaded.** Photos now have a fixed shape (4:3, or squares when there are several), so their space is reserved before they arrive, and the first one loads first.
 
-What's left on purpose: when you're logged out, the site asks the API "who am I?" and gets "not logged in", which the browser logs as an error (Best practices 96). And on a slow phone connection, posts appear about 3 s after the page, because they're fetched after it loads; rendering the first posts on the server would fix that.
+What's left on purpose: when you're logged out, the site asks the API "who am I?" and gets "not logged in", which the browser logs as an error (Best practices 96).
+
+### Round two: posts in the first paint
+
+After the audit, posts still appeared about 3 s after the page on a phone: the browser first loaded the page, then asked "who am I?", and only then asked for posts. For **logged-out visitors** (recruiters opening the demo, people arriving from a shared link) the website's own server now fetches the first posts and sends them **inside the page**. It can tell a guest from a logged-in person by the login cookie, which JavaScript can't read but the server can. Logged-in pages are unchanged, because their content depends on who you are.
+
+Two safety rules: the server asks the API as a logged-out visitor, so private group posts are never sent, and it waits at most 3 seconds; if the free API is asleep, the page falls back to loading posts in the browser. The same server step also writes each post's and profile's **link preview** (title, text and photo for WhatsApp, LinkedIn and Slack).
+
+| Phone, live site (Lighthouse) | Before | After |
+|---|---|---|
+| Performance (home, profile, post) | 94–95 | **99–100** |
+| Main photo shown (LCP) | 2.9–3.0 s | **1.8–2.0 s** |
+| Page looks complete (Speed Index) | 1.8–3.0 s | **1.3–1.6 s** |
 
 ## Outcome
 
 - **Live** on Vercel (website) and Render (API), with PostgreSQL, MongoDB and Cloudinary
-- **Accessibility 100 and performance 93–99** in Lighthouse on the live site, with 0 axe issues in light and dark mode
-- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos, likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, **post search**, light and dark themes, and **public and private groups** with roles
+- **Accessibility 100, and performance 99–100 on a phone for the home, profile and post pages,** in Lighthouse on the live site, with 0 axe issues in light and dark mode
+- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos, likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, **post search**, link previews for shared posts and profiles, light and dark themes, and **public and private groups** with roles
 - **49 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
 
 ## What I'd do next
