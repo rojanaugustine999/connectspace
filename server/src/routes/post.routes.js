@@ -3,7 +3,7 @@ import * as posts from "../controllers/post.controller.js";
 import { requireAuth, optionalAuth } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 import { validateObjectId } from "../middleware/validateObjectId.js";
-import { createPostSchema, createCommentSchema } from "../validators/post.schema.js";
+import { createPostSchema, updatePostSchema, createCommentSchema } from "../validators/post.schema.js";
 
 const router = Router();
 
@@ -18,6 +18,7 @@ router.get("/search", optionalAuth, posts.search);
 router.param("id", validateObjectId("id"));
 
 router.get("/:id", optionalAuth, posts.getOne);
+router.patch("/:id", requireAuth, validate(updatePostSchema), posts.update);
 router.delete("/:id", requireAuth, posts.remove);
 
 router.post("/:id/like", requireAuth, posts.like);

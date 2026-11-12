@@ -9,7 +9,7 @@ import { Notification } from "../models/Notification.js";
 import { prisma } from "../config/prisma.js";
 import { httpError } from "../utils/httpError.js";
 import { createNotification } from "./notification.service.js";
-import { notifyMentions } from "./mention.service.js";
+import { notifyMentions, extractMentions } from "./mention.service.js";
 import { getMembership, canViewGroup, isAdmin } from "./group.access.js";
 
 const PAGE_SIZE = 10;
@@ -57,6 +57,7 @@ export async function hydratePosts(posts, viewerId) {
     likeCount: p.likeCount,
     commentCount: p.commentCount,
     createdAt: p.createdAt,
+    editedAt: p.editedAt ?? null,
     author: authors.get(p.authorId) ?? deletedUser,
     group: p.groupId ? (groupById.get(p.groupId) ?? null) : null,
     likedByMe: likedIds.has(p._id.toString()),
@@ -95,6 +96,32 @@ export async function createPost(userId, { content, images = [] }, groupId = nul
 export async function getPost(postId, viewerId) {
   const post = await findPostOrThrow(postId, viewerId);
   const [hydrated] = await hydratePosts([post], viewerId);
+  return hydrated;
+}
+
+// Only the author may edit (group admins can delete a post, but not put words in someone's mouth).
+// Saving the same text again is a no-op, so the post doesn't get an "edited" label for nothing.
+// Newly added @mentions notify those people; people mentioned before aren't notified again.
+export async function updatePost(postId, userId, { content }) {
+  const post = await findPostOrThrow(postId, userId);
+  if (post.authorId !== userId) throw httpError(403, "You can only edit your own posts");
+
+  if (content !== post.content) {
+    const updated = await Post.findByIdAndUpdate(
+      postId,
+      { $set: { content, editedAt: new Date() } },
+      { returnDocument: "after" }
+    ).lean();
+    await notifyMentions({
+      text: content,
+      actorId: userId,
+      post: updated,
+      skipUsernames: extractMentions(post.content),
+    }).catch((err) => console.error("Could not create mention notifications:", err.message));
+    const [hydrated] = await hydratePosts([updated], userId);
+    return hydrated;
+  }
+  const [hydrated] = await hydratePosts([post], userId);
   return hydrated;
 }
 

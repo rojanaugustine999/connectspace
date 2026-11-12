@@ -24,8 +24,9 @@ export function extractMentions(text = "") {
 }
 
 // skipUserIds: people who already get a notification for this action (e.g. the post author on a comment).
-export async function notifyMentions({ text, actorId, post, skipUserIds = [] }) {
-  const usernames = extractMentions(text);
+// skipUsernames: people mentioned before (when a post is edited), so they aren't notified twice.
+export async function notifyMentions({ text, actorId, post, skipUserIds = [], skipUsernames = [] }) {
+  const usernames = extractMentions(text).filter((u) => !skipUsernames.includes(u));
   if (usernames.length === 0) return [];
 
   let users = await prisma.user.findMany({ where: { username: { in: usernames } }, select: { id: true } });

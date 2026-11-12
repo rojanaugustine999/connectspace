@@ -9,6 +9,7 @@ const postSchema = new mongoose.Schema(
     images: [{ type: String }],
     likeCount: { type: Number, default: 0 },
     commentCount: { type: Number, default: 0 },
+    editedAt: { type: Date, default: null }, // set when the author changes the text
   },
   { timestamps: true }
 );

@@ -16,6 +16,11 @@ export async function getOne(req, res) {
   res.json({ post: await postService.getPost(req.params.id, req.user?.id) });
 }
 
+// PATCH /api/posts/:id   { content }
+export async function update(req, res) {
+  res.json({ post: await postService.updatePost(req.params.id, req.user.id, req.body) });
+}
+
 // DELETE /api/posts/:id
 export async function remove(req, res) {
   await postService.deletePost(req.params.id, req.user.id);

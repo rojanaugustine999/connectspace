@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import RichText from "@/components/RichText";
 import { optimizedImage } from "@/lib/image";
@@ -8,11 +8,47 @@ import { api } from "@/lib/api";
 import { timeAgo } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import LikeButton from "@/components/LikeButton";
+import MentionField from "@/components/MentionField";
 
 export default function PostCard({ post, onDeleted, linkToPost = true, commentCount, showGroup = true, highlight, priority = false }) {
   const [deleting, setDeleting] = useState(false);
   const comments = commentCount ?? post.commentCount;
   const postUrl = `/p/${post.id}`;
+
+  // Editing (author only): the text is swapped for a box, Save sends PATCH /api/posts/:id.
+  const [content, setContent] = useState(post.content);
+  const [editedAt, setEditedAt] = useState(post.editedAt ?? null);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [editError, setEditError] = useState("");
+  const editButtonRef = useRef(null);
+
+  function startEditing() {
+    setDraft(content);
+    setEditError("");
+    setEditing(true);
+  }
+  function stopEditing() {
+    setEditing(false);
+    requestAnimationFrame(() => editButtonRef.current?.focus()); // keyboard users land back where they were
+  }
+  async function saveEdit(e) {
+    e?.preventDefault();
+    if (!draft.trim() || saving) return;
+    setSaving(true);
+    setEditError("");
+    try {
+      const { post: saved } = await api(`/api/posts/${post.id}`, { method: "PATCH", body: { content: draft } });
+      setContent(saved.content);
+      setEditedAt(saved.editedAt);
+      stopEditing();
+    } catch (err) {
+      setEditError(err.details?.content || err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   async function handleDelete() {
     if (!window.confirm("Delete this post? This can't be undone.")) return;
@@ -53,6 +89,11 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
               {timeAgo(post.createdAt)}
             </time>
           )}
+          {editedAt && (
+            <span className="shrink-0 opacity-60" title={`Edited ${timeAgo(editedAt)}`} suppressHydrationWarning>
+              · edited
+            </span>
+          )}
         </header>
 
         {post.group && showGroup && (
@@ -61,7 +102,43 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
           </Link>
         )}
 
-        <RichText text={post.content} className="mt-1" highlight={highlight} />
+        {editing ? (
+          <form onSubmit={saveEdit} className="mt-2">
+            <MentionField
+              as="textarea"
+              aria-label="Edit post"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") stopEditing();
+                if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) saveEdit(e); // Ctrl+Enter saves
+              }}
+              rows={3}
+              maxLength={2000}
+              autoFocus
+              className="resize-y rounded-lg border border-line-strong bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-brand/40"
+            />
+            {editError && (
+              <p role="alert" className="mt-1 text-sm text-danger">
+                {editError}
+              </p>
+            )}
+            <div className="mt-2 flex gap-2">
+              <button
+                type="submit"
+                disabled={!draft.trim() || saving}
+                className="rounded-full bg-brand px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-hover disabled:opacity-40"
+              >
+                {saving ? "Saving…" : "Save"}
+              </button>
+              <button type="button" onClick={stopEditing} className="rounded-full px-3 py-1.5 text-sm opacity-70 hover:bg-subtle hover:opacity-100">
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <RichText text={content} className="mt-1" highlight={highlight} />
+        )}
 
         {post.images?.length > 0 && (
           <div className={`mt-2 grid gap-1 overflow-hidden rounded-xl ${post.images.length > 1 ? "grid-cols-2" : ""}`}>
@@ -99,15 +176,26 @@ export default function PostCard({ post, onDeleted, linkToPost = true, commentCo
             </svg>
             <span aria-hidden>{comments}</span>
           </Link>
-          {(post.canDelete ?? post.isMine) && (
-            <button
-              onClick={handleDelete}
-              disabled={deleting}
-              className="ml-auto rounded-full px-3 py-1.5 text-sm opacity-60 hover:bg-danger/10 hover:text-danger hover:opacity-100"
-            >
-              Delete
-            </button>
-          )}
+          <div className="ml-auto flex items-center">
+            {post.isMine && !editing && (
+              <button
+                ref={editButtonRef}
+                onClick={startEditing}
+                className="rounded-full px-3 py-1.5 text-sm opacity-60 hover:bg-subtle hover:opacity-100"
+              >
+                Edit
+              </button>
+            )}
+            {(post.canDelete ?? post.isMine) && (
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="rounded-full px-3 py-1.5 text-sm opacity-60 hover:bg-danger/10 hover:text-danger hover:opacity-100"
+              >
+                Delete
+              </button>
+            )}
+          </div>
         </footer>
       </div>
     </article>
