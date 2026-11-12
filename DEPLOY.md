@@ -86,8 +86,12 @@ Render redeploys automatically (Socket.io only accepts connections from this add
 - **Same databases as development.** Right now local dev and the live site share the Neon and Atlas
   databases, so test data shows up live. When you want them separate: create a Neon **branch** and a
   second Atlas database for development, and point `server/.env` at those.
-- **Render free plan sleeps** after 15 minutes without visitors. The first request after that takes
-  about a minute. Open the `/api/health` URL first to wake it up before a demo.
+- **Render free plan sleeps** after 15 minutes without visitors, and the first request after that takes
+  about a minute. The workflow [`.github/workflows/keep-alive.yml`](.github/workflows/keep-alive.yml)
+  visits `/api/health` every 5 minutes to keep it awake. It's free for public repos, and one always-on
+  service fits in Render's 750 free hours a month. Run it by hand from **Actions → Keep API awake →
+  Run workflow**. GitHub pauses schedules in repos with no commits for 60 days; re-enable it there if
+  that happens.
 - **Every `git push` to `main` redeploys both** Render and Vercel automatically. New Prisma migrations
   run on Render during the build (`prisma migrate deploy`).
 - **Large uploads:** images go through the Vercel proxy. If uploads close to the 5 MB limit fail on the

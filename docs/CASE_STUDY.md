@@ -80,7 +80,7 @@ flowchart LR
 | Login would fail on iPhones | Third-party cookies are blocked by Safari | Proxy the API through the website's own domain |
 | Photo uploads said "Something went wrong" | Wrong Cloudinary secret, and a vague error message | Fixed the secret; expected errors now say what happened |
 | Rate limits were shared by everyone | The server saw proxy IPs, not visitors | Signed visitor IP from the proxy, measured hop count |
-| "Couldn't load posts" after a quiet hour | The free API server sleeps and takes ~55 s to wake | Auto-retry plus a "Waking up the server…" notice with a seconds counter; a monitor pings it to keep it awake |
+| "Couldn't load posts" after a quiet hour | The free API server sleeps and takes ~55 s to wake | Auto-retry plus a "Waking up the server…" notice with a seconds counter; a scheduled GitHub Action pings it every 5 minutes to keep it awake |
 
 The biggest lesson: **a vague error message is a design problem.** Half of these took longer than needed because something said "Something went wrong" instead of what actually happened.
 

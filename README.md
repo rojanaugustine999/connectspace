@@ -22,7 +22,7 @@
 </p>
 
 > **Try it:** log in as `alice@demo.test` / `password123` (a shared demo account; anything you post is public).
-> The free API server sleeps when idle, so the first load can take up to a minute.
+> The API runs on a free plan that sleeps when idle. A [scheduled GitHub Action](.github/workflows/keep-alive.yml) keeps it awake, and if it ever does sleep, the site shows "Waking up the server…" and loads by itself.
 
 ## Features
 
