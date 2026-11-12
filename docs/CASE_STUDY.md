@@ -28,6 +28,11 @@ So I set myself one constraint: **every interaction must be backed by a real ser
 |---|---|
 | <img src="screenshots/feed.png" width="320" alt="Home feed with photo posts"> | <img src="screenshots/notifications.png" alt="Notifications showing new followers"> |
 
+**The same chat in two browsers:** my message is marked "Seen" the moment Alice opens it.
+
+<img src="screenshots/chat-you.png" alt="My view of the chat with Alice, message marked Seen">
+<img src="screenshots/chat-alice.png" alt="Alice's view of the same chat in another browser">
+
 Likes, follows and chat messages update the UI **before** the server answers (optimistic UI) and roll back if the request fails. The design idea needed backend support: likes use an atomic `$inc` plus a unique index, so double-taps can't double-count. Chat messages carry a `clientId`, so the "Sending…" bubble is swapped for the saved message without duplicates.
 
 ### 2. Never a dead end
@@ -37,6 +42,7 @@ Every list has three designed states: **loading** (skeletons, not spinners), **e
 - The Follow button is a real toggle (`aria-pressed`) with a stable label ("Follow @alice"). Its "Unfollow" hover text only appears on devices with a mouse, because a tap on a phone would leave it stuck.
 - Form errors are linked to their inputs (`aria-invalid` and `aria-describedby`), and unread badges include screen-reader text ("3 unread").
 - Phone nav icons are labelled links, not decorative emoji.
+- The account menu on the avatar (View profile, Edit profile, Log out) follows the WAI-ARIA menu button pattern: Enter opens it and focuses the first item, arrow keys move and wrap, Escape closes it and returns focus to the avatar.
 
 ### 4. Mobile first
 

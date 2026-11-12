@@ -35,25 +35,29 @@
 
 ## Screenshots
 
+### Real-time chat: one conversation, two people
+
+**Your view:** your message shows "Seen" as soon as Alice opens the chat.
+<img src="docs/screenshots/chat-you.png" alt="Your view of a chat with Alice: 'Hi Alice!' marked Seen, and her reply 'Hi Rojan'">
+
+**Alice's view, in another browser:** the same messages arrive live, with no refresh.
+<img src="docs/screenshots/chat-alice.png" alt="Alice's view of the same chat, receiving the messages live">
+
 ### Logged in
 
 | Home feed | People you follow |
 |---|---|
 | <img src="docs/screenshots/feed.png" alt="Home feed with photo posts from people you follow" width="400"> | <img src="docs/screenshots/people-following.png" alt="People page showing who you follow"> |
 
-| Messages | Live notifications |
+| Live notifications | Your profile |
 |---|---|
-| <img src="docs/screenshots/messages.png" alt="Messages: conversation list"> | <img src="docs/screenshots/notifications.png" alt="Notifications: new followers"> |
+| <img src="docs/screenshots/notifications.png" alt="Notifications: new followers"> | <img src="docs/screenshots/my-profile.png" alt="Your own profile with photo, posts and the post composer"> |
 
-| Your profile | On a phone |
-|---|---|
-| <img src="docs/screenshots/my-profile.png" alt="Your own profile with photo, posts and the post composer"> | <img src="docs/screenshots/mobile-profile.png" alt="Profile on a phone" width="260"> |
+### Logged out and on a phone
 
-### Logged out
-
-| A public profile | Sign up |
-|---|---|
-| <img src="docs/screenshots/profile.png" alt="Public profile page"> | <img src="docs/screenshots/signup.png" alt="Sign-up form"> |
+| A public profile | Sign up | On a phone |
+|---|---|---|
+| <img src="docs/screenshots/profile.png" alt="Public profile page"> | <img src="docs/screenshots/signup.png" alt="Sign-up form"> | <img src="docs/screenshots/mobile-profile.png" alt="Profile on a phone" width="200"> |
 
 ## Architecture
 
