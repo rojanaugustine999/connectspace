@@ -69,6 +69,11 @@ The @mention list is an accessible combobox: arrow keys move through people, Ent
 
 One Search page with **People** and **Posts** tabs, instead of two separate pages. Posts are found with a MongoDB text index, which matches whole words and their stems ("walks" finds "walking") and ranks the best match first. Because that's different from how people expect a search box to behave, the design does the explaining: the matching words are **highlighted** so you can see *why* a post was found, and the empty states teach the rule ("Try a whole word instead of part of one"). The search lives in the URL, so a search can be shared and the Back button works. Private group posts only appear for members, using the same rule as everywhere else.
 
+### 8. Leaving should be as clear as joining
+Anyone can delete their account from Settings, with the same two-step pattern GitHub and Google use for destructive actions: a plain button that only opens the form, then a list of exactly what will be deleted and a password to confirm. Afterwards a short page confirms it's done.
+
+Behind that one button, the server cleans up **two databases and an image store**. PostgreSQL removes follows and group memberships by itself, but MongoDB has no foreign keys, so posts, comments, likes, notifications and conversations are deleted by hand, and the like and comment counts on other people's posts are recounted. Groups the person owned pass to the longest-serving admin (or member), and groups with nobody left are deleted. The order is deliberate: MongoDB and photos first, the PostgreSQL account **last**, so if anything fails halfway the account still exists and the person can simply try again.
+
 ## The brand
 
 <img src="brand/logo-mark.svg" width="56" alt="ConnectSpace logo mark"> **Two interlocking rings: two people, one shared space.**
@@ -100,6 +105,7 @@ flowchart LR
 | Login would fail on iPhones | Third-party cookies are blocked by Safari | Proxy the API through the website's own domain |
 | Photo uploads said "Something went wrong" | Wrong Cloudinary secret, and a vague error message | Fixed the secret; expected errors now say what happened |
 | Rate limits were shared by everyone | The server saw proxy IPs, not visitors | Signed visitor IP from the proxy, measured hop count |
+| A deleted account could still post from another device | A login token stays valid for 7 days, and only its signature was checked | Every login check (and live connection) also confirms the account still exists |
 | "Couldn't load posts" after a quiet hour | The free API server sleeps and takes ~55 s to wake | Auto-retry plus a "Waking up the server…" notice with a seconds counter; a scheduled GitHub Action pings it every 5 minutes to keep it awake |
 
 The biggest lesson: **a vague error message is a design problem.** Half of these took longer than needed because something said "Something went wrong" instead of what actually happened.
@@ -143,8 +149,8 @@ Two safety rules: the server asks the API as a logged-out visitor, so private gr
 
 - **Live** on Vercel (website) and Render (API), with PostgreSQL, MongoDB and Cloudinary
 - **Accessibility 100, and performance 99–100 on a phone for the home, profile and post pages,** in Lighthouse on the live site, with 0 axe issues in light and dark mode
-- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos (editable afterwards, with an "edited" label), likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, **post search**, link previews for shared posts and profiles, light and dark themes, and **public and private groups** with roles
-- **54 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
+- Sign-up and login, profiles, follows, a feed with infinite scroll, posts with photos (editable afterwards, with an "edited" label), likes, threaded comments, **real-time chat** with typing indicators and read receipts, **live notifications**, **@mentions**, **post search**, link previews for shared posts and profiles, light and dark themes, **public and private groups** with roles, and **account deletion** that cleans up both databases
+- **57 automated API tests** run on every push in GitHub Actions, against throwaway PostgreSQL and MongoDB databases. They include security checks (faked IP addresses, disguised image files, outsiders opening private group posts) and real-time checks with real Socket.io clients
 
 ## What I'd do next
 

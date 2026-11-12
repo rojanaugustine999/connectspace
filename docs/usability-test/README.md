@@ -82,7 +82,7 @@ After each task, ask: **"How easy or hard was that, from 1 (very hard) to 5 (ver
 2. "Was there anything you **expected to find but couldn't**?"
 3. "If you could change **one thing**, what would it be?"
 
-Thank them. If they'd like, offer to delete their posts and group post afterwards.
+Thank them. If they'd like their test account removed, they can do it themselves in **Settings → Delete account** (this is also a good last look at a flow you haven't tested: note anything that makes them hesitate).
 
 ## 7. After all five sessions
 

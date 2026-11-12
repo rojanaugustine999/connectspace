@@ -12,6 +12,7 @@ so authentication is a first-party `httpOnly` cookie. All bodies are JSON unless
 | GET | `/api/auth/socket-token` (2-minute token for Socket.io) | required |
 | GET | `/api/users/search?q=` | optional |
 | PATCH | `/api/users/me` | required |
+| DELETE | `/api/users/me` `{ password }` (deletes the account and all its data; rate-limited like login; clears the cookie) | required |
 | GET | `/api/users/:username` | optional |
 | POST / DELETE | `/api/users/:username/follow` | required |
 | GET | `/api/users/:username/followers?page=` · `/following?page=` | optional |
