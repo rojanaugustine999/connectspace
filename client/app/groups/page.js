@@ -32,6 +32,10 @@ export default function GroupsPage() {
     return () => clearTimeout(t);
   }, [query, loading, user?.id]);
 
+  // Discover = groups you're not in yet. (A search still finds your own groups too.)
+  const myIds = new Set((mine ?? []).map((g) => g.id));
+  const shown = query.trim() ? groups : groups?.filter((g) => !myIds.has(g.id));
+
   return (
     <main className="mx-auto max-w-3xl px-4 py-6 font-sans">
       <div className="flex items-center justify-between gap-4">
@@ -67,14 +71,18 @@ export default function GroupsPage() {
           placeholder="Search groups"
           className="mt-2 w-full rounded-lg border border-line-strong bg-transparent px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand/40"
         />
-        {!groups && <p className="mt-6 opacity-60">Loading…</p>}
-        {groups?.length === 0 && (
+        {!shown && <p className="mt-6 opacity-60">Loading…</p>}
+        {shown?.length === 0 && (
           <p className="mt-8 text-center opacity-60">
-            {query ? `No groups match “${query}”.` : "No groups yet. Create the first one!"}
+            {query.trim()
+              ? `No groups match “${query.trim()}”.`
+              : groups.length > 0
+                ? "You're in every group so far. Create a new one!"
+                : "No groups yet. Create the first one!"}
           </p>
         )}
         <ul className="mt-2 divide-y divide-line">
-          {groups?.map((g) => (
+          {shown?.map((g) => (
             <GroupCard key={g.id} group={g} />
           ))}
         </ul>

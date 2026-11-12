@@ -150,7 +150,7 @@ export default function GroupMembersPage() {
         </section>
       )}
 
-      <h2 className="text-sm font-semibold uppercase tracking-wide opacity-60">{members.length} members</h2>
+      <h2 className="text-sm font-semibold uppercase tracking-wide opacity-60">{members.length} {members.length === 1 ? "member" : "members"}</h2>
       <ul className="divide-y divide-line">
         {members.map((m) => (
           <MemberRow key={m.id} member={m} actions={memberActions(m)} />
