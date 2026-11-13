@@ -4,6 +4,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { SocketProvider } from "@/lib/socket-context";
 import NavBar from "@/components/NavBar";
 import WakingBanner from "@/components/WakingBanner";
+import SiteFooter from "@/components/SiteFooter";
 import { themeScript } from "@/lib/theme";
 
 const geistSans = Geist({
@@ -46,13 +47,15 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        // Column layout so the footer sits at the bottom even on short pages.
+        className={`${geistSans.variable} ${geistMono.variable} flex min-h-dvh flex-col antialiased`}
       >
         <AuthProvider>
           <SocketProvider>
             <NavBar />
             <WakingBanner />
-            {children}
+            <div className="flex flex-1 flex-col">{children}</div>
+            <SiteFooter />
           </SocketProvider>
         </AuthProvider>
       </body>

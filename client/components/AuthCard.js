@@ -4,7 +4,7 @@ import { LogoMark } from "@/components/Logo";
 
 export default function AuthCard({ title, subtitle, children, footer }) {
   return (
-    <main className="min-h-[calc(100dvh-3.5rem)] flex items-center justify-center p-4 font-sans">
+    <main className="flex flex-1 items-center justify-center p-4 font-sans">
       <div className="w-full max-w-sm">
         {/* The full logo is already in the nav bar, so the icon alone works as a friendly anchor here. */}
         <Link href="/" aria-label="ConnectSpace home" className="inline-block rounded-xl">

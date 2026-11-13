@@ -18,7 +18,7 @@ export default function MePage() {
   }, [loading, user, router]);
 
   if (loading || !user) {
-    return <main className="min-h-[calc(100dvh-3.5rem)] flex items-center justify-center font-sans opacity-70">Loading…</main>;
+    return <main className="flex flex-1 items-center justify-center font-sans opacity-70">Loading…</main>;
   }
 
   async function handleLogout() {
@@ -29,7 +29,7 @@ export default function MePage() {
   const joined = new Date(user.createdAt).toLocaleDateString(undefined, { dateStyle: "long" });
 
   return (
-    <main className="min-h-[calc(100dvh-3.5rem)] flex items-center justify-center p-4 font-sans">
+    <main className="flex flex-1 items-center justify-center p-4 font-sans">
       <div className="w-full max-w-sm rounded-2xl border border-line p-6">
         <div className="flex items-center gap-4">
           {/* The shared Avatar: shows the uploaded photo, or the same colour as everywhere else. */}
